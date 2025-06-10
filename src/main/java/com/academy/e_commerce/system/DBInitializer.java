@@ -5,6 +5,8 @@ import com.academy.e_commerce.admin.AdminService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+
+//todo: rename file with adminInitializer
 @Component
 public class DBInitializer implements CommandLineRunner {
 
@@ -14,6 +16,7 @@ public class DBInitializer implements CommandLineRunner {
         this.adminService = adminService;
     }
 
+    //todo: use a logger for checking
     @Override
     public void run(String... args) throws Exception {
 
