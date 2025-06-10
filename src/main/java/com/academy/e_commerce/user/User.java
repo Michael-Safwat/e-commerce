@@ -16,16 +16,19 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
+//todo : add trials to suspend depending on it
+//todo : add email attribute
 public abstract class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String username;
+    private String username;//todo : rename this with userName
     private String password;
     private String name;
     private String roles;
-    private Boolean isLocked;
-    private Boolean isEnabled;
+    //Should the trials be in admin attributes?
+    private Boolean isLocked; //todo : as business required replace this with status
+    private Boolean isEnabled; //todo: remove this when you add status
 }
