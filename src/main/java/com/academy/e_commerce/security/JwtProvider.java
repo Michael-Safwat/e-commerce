@@ -1,5 +1,6 @@
 package com.academy.e_commerce.security;
 
+import com.academy.e_commerce.user.UserPrincipal;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -34,7 +35,7 @@ public class JwtProvider {
                 .issuedAt(now)
                 .expiresAt(now.plus(expiresIn, ChronoUnit.HOURS))
                 .subject(authentication.getName())
-                .claim("userId", ((UserPrincipal)(authentication.getPrincipal())).getUser().getId())
+                .claim("userId", ((UserPrincipal)(authentication.getPrincipal())).user().getId())
                 .claim("authorities", authorities)
                 .build();
 

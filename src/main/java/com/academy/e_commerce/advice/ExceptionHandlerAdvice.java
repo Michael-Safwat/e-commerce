@@ -45,6 +45,6 @@ public class ExceptionHandlerAdvice {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     Result handleOtherException(Exception ex) {
-        return new Result(false, StatusCode.INTERNAL_SERVER_ERROR, "A server internal error occurs", ex.getMessage());
+        return new Result(false, StatusCode.INTERNAL_SERVER_ERROR, "A server internal error occurred", ex.getMessage());
     }
 }

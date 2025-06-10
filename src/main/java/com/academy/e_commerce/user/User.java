@@ -1,31 +1,42 @@
 package com.academy.e_commerce.user;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
+import com.academy.e_commerce.order.Order;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
-@Entity(name = "abstract_user")
+import java.util.List;
+
+@Entity(name = "users")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder
-public abstract class User {
+@Builder
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String username;
+    @NotBlank(message = "email can't be empty")
+    @Email(message = "must be valid email")
+    private String email;
+
+    @NotNull(message = "password can't be empty")
     private String password;
+
+    @NotBlank(message = "name can't be empty")
     private String name;
+
+    @NotBlank(message = "rolls can't be empty")
     private String roles;
-    private Boolean isLocked;
-    private Boolean isEnabled;
+
+    private Boolean isLocked = true;
+    private Boolean isEnabled = false;
+
+    @OneToMany(mappedBy = "user")
+    List<Order> orders;
 }
