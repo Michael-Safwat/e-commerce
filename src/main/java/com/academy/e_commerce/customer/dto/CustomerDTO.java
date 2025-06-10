@@ -15,4 +15,5 @@ public class CustomerDTO {
     private String name;
     private String username;
     private String roles;
+    int x;
 }
