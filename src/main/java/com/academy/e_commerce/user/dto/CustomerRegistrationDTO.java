@@ -1,25 +1,16 @@
-package com.academy.e_commerce.user;
+package com.academy.e_commerce.user.dto;
 
-import com.academy.e_commerce.order.Order;
-import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.util.List;
-
-@Entity(name = "users")
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class CustomerRegistrationDTO {
 
     @NotBlank(message = "email can't be empty")
     @Email(message = "must be valid email")
@@ -30,13 +21,4 @@ public class User {
 
     @NotBlank(message = "name can't be empty")
     private String name;
-
-    @NotBlank(message = "rolls can't be empty")
-    private String roles;
-
-    private Boolean isLocked = false;
-    private Boolean isEnabled = false;
-
-    @OneToMany(mappedBy = "user")
-    List<Order> orders;
 }

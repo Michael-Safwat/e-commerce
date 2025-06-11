@@ -1,7 +1,5 @@
-package com.academy.e_commerce.security;
+package com.academy.e_commerce.user;
 
-import com.academy.e_commerce.user.User;
-import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,14 +8,7 @@ import org.springframework.util.StringUtils;
 import java.util.Arrays;
 import java.util.Collection;
 
-@Getter
-public class UserPrincipal implements UserDetails {
-
-    private final User user;
-
-    public UserPrincipal(User user) {
-        this.user = user;
-    }
+public record UserPrincipal(User user) implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -33,7 +24,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.user.getUsername();
+        return this.user.getEmail();
     }
 
     @Override

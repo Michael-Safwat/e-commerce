@@ -22,6 +22,6 @@ public class AuthController {
     @PostMapping("/login")
     public Result getLoginInfo(Authentication authentication) {
         log.debug("Authenticated user: '{}'", authentication.getName());
-        return new Result(true, StatusCode.SUCCESS, "User info and JWT", this.authService.createLoginInfo(authentication));
+        return new Result(true, StatusCode.SUCCESS, "JWT created", this.authService.createJwtToken(authentication));
     }
 }
