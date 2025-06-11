@@ -61,7 +61,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
                         .requestMatchers(HttpMethod.GET, this.baseUrl + "/login/**").permitAll()
                         .requestMatchers(HttpMethod.POST, this.baseUrl + "/customers/register/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, this.baseUrl + "/admins/register/**").hasAnyAuthority("ROLE_super_admin")
+                        .requestMatchers(HttpMethod.POST, this.baseUrl + "/admins/register/**").hasAnyAuthority("ROLE_SUPER_ADMIN")
 
                         // Disallow anything else.
                         .anyRequest().authenticated()
