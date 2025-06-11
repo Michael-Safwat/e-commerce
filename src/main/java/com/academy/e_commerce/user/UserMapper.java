@@ -1,6 +1,6 @@
 package com.academy.e_commerce.user;
 
-import com.academy.e_commerce.user.dto.CustomerRegistrationDTO;
+import com.academy.e_commerce.user.dto.UserRegistrationDTO;
 import com.academy.e_commerce.user.dto.UserDTO;
 
 public class UserMapper {
@@ -12,11 +12,11 @@ public class UserMapper {
                 .build();
     }
 
-    public static User customerRegistrationDTOToUser(CustomerRegistrationDTO customerRegistrationDTO){
+    public static User UserRegistrationDTOToUser(UserRegistrationDTO UserRegistrationDTO){
         return User.builder()
-                .email(customerRegistrationDTO.getEmail())
-                .password(customerRegistrationDTO.getPassword())
-                .name(customerRegistrationDTO.getName())
+                .email(UserRegistrationDTO.getEmail())
+                .password(UserRegistrationDTO.getPassword())
+                .name(UserRegistrationDTO.getName())
                 .build();
     }
 

@@ -1,17 +1,19 @@
 package com.academy.e_commerce.system;
 
+import com.academy.e_commerce.user.AdminService;
 import com.academy.e_commerce.user.User;
+import com.academy.e_commerce.user.UserMapper;
 import com.academy.e_commerce.user.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DBInitializer implements CommandLineRunner {
+public class AdminInitializer implements CommandLineRunner {
 
-    private final UserService userService;
+    private final AdminService adminService;
 
-    public DBInitializer(UserService userService) {
-        this.userService = userService;
+    public AdminInitializer(AdminService adminService) {
+        this.adminService = adminService;
     }
 
     @Override
@@ -21,11 +23,11 @@ public class DBInitializer implements CommandLineRunner {
                 .name("Michael")
                 .email("mike@example.com")
                 .password("123")
-                .roles("super_admin")
+                .role("super_admin")
                 .isEnabled(true)
                 .isLocked(false)
                 .build();
 
-        this.userService.registerAdmin(admin);
+        this.adminService.registerAdmin(admin);
     }
 }

@@ -31,8 +31,7 @@ public class User {
     @NotBlank(message = "name can't be empty")
     private String name;
 
-    @NotBlank(message = "rolls can't be empty")
-    private String roles;
+    private String role;
 
     private Boolean isLocked = false;
     private Boolean isEnabled = false;
