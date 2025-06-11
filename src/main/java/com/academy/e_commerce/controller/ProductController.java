@@ -27,6 +27,8 @@ public class ProductController {
         return ResponseEntity.ok(productService.getAllProducts());
     }
 
+    //todo: add authorization
+
     // Get a product by ID
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable Long id) {
