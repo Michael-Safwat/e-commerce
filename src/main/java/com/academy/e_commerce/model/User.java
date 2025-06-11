@@ -1,0 +1,44 @@
+package com.academy.e_commerce.model;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
+
+import java.util.List;
+
+@Entity(name = "users")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotBlank(message = "email can't be empty")
+    @Email(message = "must be valid email")
+    private String email;
+
+    @NotNull(message = "password can't be empty")
+    private String password;
+
+    @NotBlank(message = "name can't be empty")
+    private String name;
+
+    @NotBlank(message = "rolls can't be empty")
+    private String roles;
+
+    private Boolean isLocked = false;
+    private Boolean isEnabled = false;
+
+    @OneToMany(mappedBy = "user")
+    List<Order> orders;
+
+    @OneToMany(mappedBy = "customer")
+    List<PaymentCard> paymentCards;
+}
