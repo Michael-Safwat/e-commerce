@@ -1,6 +1,7 @@
 package com.academy.e_commerce.user;
 
 import com.academy.e_commerce.order.Order;
+import com.academy.e_commerce.payment.PaymentCard;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -39,4 +40,7 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     List<Order> orders;
+
+    @OneToMany(mappedBy = "customer")
+    List<PaymentCard> paymentCards;
 }
