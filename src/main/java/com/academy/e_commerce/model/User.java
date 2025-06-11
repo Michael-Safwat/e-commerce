@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity(name = "users")
 @Getter
@@ -30,8 +31,11 @@ public class User {
     @NotBlank(message = "name can't be empty")
     private String name;
 
-    @NotBlank(message = "rolls can't be empty")
-    private String roles;
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role")
+    private Set<Role> roles;
 
     private Boolean isLocked = false;
     private Boolean isEnabled = false;
