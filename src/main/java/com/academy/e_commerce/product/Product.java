@@ -35,7 +35,7 @@ public class Product {
     private String category;
 
     @NotNull(message = "Image can't be empty")
-    private String Image;
+    private String image;
 
     @Min(value = 0, message = "Rating must be at least 0")
     @Max(value = 5, message = "Rating must be at most 5")
