@@ -1,8 +1,7 @@
 package com.academy.e_commerce.advice;
 
-import com.academy.e_commerce.system.Result;
-import com.academy.e_commerce.system.StatusCode;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AccountStatusException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -17,32 +16,32 @@ public class ExceptionHandlerAdvice {
 
     @ExceptionHandler({UsernameNotFoundException.class, BadCredentialsException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    Result handleAuthenticationException(Exception ex) {
-        return new Result(false, StatusCode.UNAUTHORIZED, "username or password is incorrect", ex.getMessage());
+    ResponseEntity<String> handleAuthenticationException(Exception ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(AccountStatusException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    Result handleAccountStatusException(AccountStatusException ex) {
-        return new Result(false, StatusCode.UNAUTHORIZED, "User account is abnormal", ex.getMessage());
+    ResponseEntity<String> handleAccountStatusException(AccountStatusException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(InvalidBearerTokenException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    Result handleInvalidBearerTokenException(InvalidBearerTokenException ex) {
-        return new Result(false, StatusCode.UNAUTHORIZED, "The access token provided is expired, revoked, malformed or invalid for other reasons", ex.getMessage());
+    ResponseEntity<String> handleInvalidBearerTokenException(InvalidBearerTokenException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    Result handleAccessDeniedException(AccessDeniedException ex) {
-        return new Result(false, StatusCode.FORBIDDEN, "No permission", ex.getMessage());
+    ResponseEntity<String> handleAccessDeniedException(AccessDeniedException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Result handleRuntimeException(RuntimeException ex) {
-        return new Result(false, StatusCode.INTERNAL_SERVER_ERROR, "A runtime error occurred", ex.getMessage());
+    ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     /*
@@ -50,7 +49,7 @@ public class ExceptionHandlerAdvice {
      */
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    Result handleOtherException(Exception ex) {
-        return new Result(false, StatusCode.INTERNAL_SERVER_ERROR, "A server internal error occurred", ex.getMessage());
+    ResponseEntity<String> handleOtherException(Exception ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

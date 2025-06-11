@@ -15,9 +15,9 @@ public class AuthService {
         this.jwtProvider = jwtProvider;
     }
 
-    public Map<String, Object> createJwtToken(Authentication authentication) {
+    public Map<String, String> createJwtToken(Authentication authentication) {
 
-        Map<String, Object> loginResultMap = new HashMap<>();
+        Map<String, String> loginResultMap = new HashMap<>();
         String token = this.jwtProvider.createToken(authentication);
         loginResultMap.put("token", token);
         return loginResultMap;
