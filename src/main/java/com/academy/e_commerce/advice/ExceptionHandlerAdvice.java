@@ -39,6 +39,12 @@ public class ExceptionHandlerAdvice {
         return new Result(false, StatusCode.FORBIDDEN, "No permission", ex.getMessage());
     }
 
+    @ExceptionHandler(RuntimeException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Result handleRuntimeException(RuntimeException ex) {
+        return new Result(false, StatusCode.INTERNAL_SERVER_ERROR, "A runtime error occurred", ex.getMessage());
+    }
+
     /*
      * Fallback handles any unhandled exceptions
      */
