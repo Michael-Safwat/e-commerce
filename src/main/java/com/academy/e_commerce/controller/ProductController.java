@@ -23,8 +23,10 @@ public class ProductController {
 
     // Get all products
     @GetMapping
-    public ResponseEntity<List<Product>> getAllProducts() {
-        return ResponseEntity.ok(productService.getAllProducts());
+    public ResponseEntity<List<Product>> getAllProducts
+    (@RequestParam(name = "category", required = false) String category,
+     @RequestParam(name = "name", required = false) String name) {
+        return ResponseEntity.ok(productService.getAllProducts(category, name));
     }
 
     // Get a product by ID
