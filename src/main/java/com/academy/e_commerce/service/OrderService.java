@@ -7,6 +7,7 @@ import com.academy.e_commerce.model.Order;
 import com.academy.e_commerce.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,12 +18,19 @@ public class OrderService {
         this.orderRepository = orderRepository;
     }
 
-    public OrderDTO getOrderById(Long orderId) {
-        Optional<Order> order = this.orderRepository.findById(orderId);
+    public List<OrderDTO> getAllOrdersByCustomerId(Long customerId) {
+        List<Order> orders = this.orderRepository.findAllByUser_Id(customerId);
+        return orders.stream().map(OrderMapper::orderToOrderDTO).toList();
+    }
+
+    public OrderDTO getOrderById(Long orderId, Long customerId) {
+        Optional<Order> order = this.orderRepository.findByIdAndUser_Id(orderId, customerId);
 
         if(order.isPresent())
             return OrderMapper.orderToOrderDTO(order.get());
         else
             throw new OrderNotFoundException("Order with ID " + orderId + " not found.");
     }
+
+
 }
