@@ -1,9 +1,9 @@
 package com.academy.e_commerce.repository;
 
 import com.academy.e_commerce.model.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
@@ -15,7 +15,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
      * @param name     The product name (or part of it) to search for.
      * @return A list of matching products.
      */
-    List<Product> findByCategoryContainingIgnoreCaseAndNameContainingIgnoreCase(String category, String name);
+    Page<Product> findByCategoryContainingIgnoreCaseAndNameContainingIgnoreCase(String category, String name , Pageable pageable);
 
     /**
      * Finds products by category (case-insensitive).
@@ -23,7 +23,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
      * @param category The category to search for.
      * @return A list of matching products.
      */
-    List<Product> findByCategoryContainingIgnoreCase(String category);
+    Page<Product>  findByCategoryContainingIgnoreCase(String category, Pageable pageable);
 
     /**
      * Finds products by name (case-insensitive).
@@ -31,5 +31,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
      * @param name The product name (or part of it) to search for.
      * @return A list of matching products.
      */
-    List<Product> findByNameContainingIgnoreCase(String name);
+    Page<Product>  findByNameContainingIgnoreCase(String name, Pageable pageable);
 }
