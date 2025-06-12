@@ -1,5 +1,6 @@
 package com.academy.e_commerce.service;
 
+import com.academy.e_commerce.model.Role;
 import com.academy.e_commerce.model.User;
 import com.academy.e_commerce.mapper.UserMapper;
 import com.academy.e_commerce.model.UserPrincipal;
@@ -11,6 +12,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -43,7 +46,7 @@ public class UserService implements UserDetailsService {
         User user = UserMapper.customerRegistrationDTOToUser(customer);
         user.setIsEnabled(false);
         user.setIsLocked(false);
-        user.setRoles("customer");
+        user.setRoles(Set.of(Role.CUSTOMER));
         User savedCustomer = this.userRepository.save(user);
         return UserMapper.userToUserDTO(savedCustomer);
     }

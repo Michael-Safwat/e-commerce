@@ -1,16 +1,19 @@
 package com.academy.e_commerce.config;
 
+import com.academy.e_commerce.model.Role;
 import com.academy.e_commerce.model.User;
 import com.academy.e_commerce.service.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.Set;
+
 @Component
-public class DBInitializer implements CommandLineRunner {
+public class AdminInitializer implements CommandLineRunner {
 
     private final UserService userService;
 
-    public DBInitializer(UserService userService) {
+    public AdminInitializer(UserService userService) {
         this.userService = userService;
     }
 
@@ -21,7 +24,7 @@ public class DBInitializer implements CommandLineRunner {
                 .name("Michael")
                 .email("mike@example.com")
                 .password("123")
-                .roles("super_admin")
+                .roles(Set.of(Role.SUPER_ADMIN))
                 .isEnabled(true)
                 .isLocked(false)
                 .build();
