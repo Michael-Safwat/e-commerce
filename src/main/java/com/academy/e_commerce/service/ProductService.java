@@ -27,7 +27,7 @@ public class ProductService {
     }
 
     // Get all products and convert to ProductDTO
-    public List<ProductDTO> getAllProducts(String category, String name) {
+    public List<ProductDTO> getAllProductsFiltered(String category, String name) {
         log.info("Fetching products");
         List<Product> products;
 
@@ -55,12 +55,12 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-//    public List<ProductDTO> getAllProducts (){
-//        log.info("Fetching all products");
-//        return productRepository.findAll().stream()
-//                .map(ProductMapper::productEntityToDto)
-//                .collect(Collectors.toList());
-//    }
+    public List<ProductDTO> getAllProducts (){
+        log.info("Fetching all products");
+        return productRepository.findAll().stream()
+                .map(ProductMapper::productEntityToDto)
+                .collect(Collectors.toList());
+    }
 
     // Get a product by ID and convert to ProductDTO
     public Optional<ProductDTO> getProductById(Long id) {

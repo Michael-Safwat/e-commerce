@@ -1,7 +1,6 @@
 package com.academy.e_commerce.controller;
 
 import com.academy.e_commerce.dto.ProductDTO;
-import com.academy.e_commerce.model.Product;
 import com.academy.e_commerce.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping("${api.endpoint.base-url}/products")
 @RequiredArgsConstructor
 public class ProductController {
 
@@ -23,10 +22,15 @@ public class ProductController {
         }
 
         // Get all products and return as DTOs
-        @GetMapping
+        @GetMapping("/search")
         public ResponseEntity<List<ProductDTO>> getAllProducts(@RequestParam(name = "category", required = false) String category,
                                                                @RequestParam(name = "name", required = false) String name) {
-            return ResponseEntity.ok(productService.getAllProducts(category,name));
+            return ResponseEntity.ok(productService.getAllProductsFiltered(category,name));
+        }
+
+        @GetMapping
+        public ResponseEntity<List<ProductDTO>> getAllProducts() {
+            return ResponseEntity.ok(productService.getAllProducts());
         }
 
         // Get a product by ID and return as DTO
