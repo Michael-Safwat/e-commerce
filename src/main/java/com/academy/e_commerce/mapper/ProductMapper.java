@@ -4,7 +4,11 @@ import com.academy.e_commerce.dto.ProductDTO;
 import com.academy.e_commerce.model.Product;
 
 public class ProductMapper {
-    public static ProductDTO ProductEntityToDTO(Product product) {
+
+    private ProductMapper() {
+    }
+
+    public static ProductDTO productEntityToDto(Product product) {
         if (product == null) {
             return null;
         }
@@ -20,7 +24,7 @@ public class ProductMapper {
                 .build();
     }
 
-    public static Product ProductDTOToEntity(ProductDTO dto) {
+    public static Product productDtoToEntity(ProductDTO dto) {
         if (dto == null) {
             return null;
         }
