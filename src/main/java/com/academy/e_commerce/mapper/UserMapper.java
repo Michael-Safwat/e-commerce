@@ -6,6 +6,8 @@ import com.academy.e_commerce.dto.UserDTO;
 
 public class UserMapper {
 
+    private UserMapper(){}
+
     public static UserDTO userToUserDTO(User user) {
         return UserDTO.builder()
                 .email(user.getEmail())
