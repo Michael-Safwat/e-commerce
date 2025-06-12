@@ -7,6 +7,7 @@ import com.academy.e_commerce.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,12 +27,40 @@ public class ProductService {
     }
 
     // Get all products and convert to ProductDTO
-    public List<ProductDTO> getAllProducts() {
-        log.info("Fetching all products");
-        return productRepository.findAll().stream()
+    public List<ProductDTO> getAllProducts(String category, String name) {
+        log.info("Fetching products");
+        List<Product> products;
+
+        // Use StringUtils.hasText() to check if the string is non-null and has actual text (not just whitespace)
+        boolean hasCategory = StringUtils.hasText(category);
+        boolean hasName = StringUtils.hasText(name);
+
+        if (hasCategory && hasName) {
+            // Case 1: Both category and name filters are present
+            products = productRepository.findByCategoryContainingIgnoreCaseAndNameContainingIgnoreCase(category, name);
+        } else if (hasCategory) {
+            // Case 2: Only category filter is present
+            products = productRepository.findByCategoryContainingIgnoreCase(category);
+        } else if (hasName) {
+            // Case 3: Only name filter is present
+            products = productRepository.findByNameContainingIgnoreCase(name);
+        } else {
+            // Case 4: No filters are present, retrieve all products
+            products = productRepository.findAll();
+        }
+
+        // Convert Product list to ProductDTO list using ProductMapper
+        return products.stream()
                 .map(ProductMapper::productEntityToDto)
                 .collect(Collectors.toList());
     }
+
+//    public List<ProductDTO> getAllProducts (){
+//        log.info("Fetching all products");
+//        return productRepository.findAll().stream()
+//                .map(ProductMapper::productEntityToDto)
+//                .collect(Collectors.toList());
+//    }
 
     // Get a product by ID and convert to ProductDTO
     public Optional<ProductDTO> getProductById(Long id) {
