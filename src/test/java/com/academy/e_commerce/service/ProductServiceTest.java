@@ -40,15 +40,15 @@ public class ProductServiceTest {
     }
 
     private ProductDTO getSampleProductDTO() {
-        return ProductDTO.builder()
-                .name("Sample Product")
-                .category("Books")
-                .price(19.99)
-                .stock(10)
-                .description("A sample product")
-                .image("image.png")
-                .rating(4)
-                .build();
+        return new ProductDTO(
+                "Sample Product",
+                "A sample product",
+                10,
+                19.99,
+                "Books",
+                "image.png",
+                4
+                );
     }
 
 

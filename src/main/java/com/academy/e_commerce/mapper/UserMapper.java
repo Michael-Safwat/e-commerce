@@ -9,10 +9,10 @@ public class UserMapper {
     private UserMapper(){}
 
     public static UserDTO userToUserDTO(User user) {
-        return UserDTO.builder()
-                .email(user.getEmail())
-                .name(user.getName())
-                .build();
+        return new UserDTO(
+                user.getEmail(),
+                user.getName()
+                );
     }
 
     public static User userRegistrationDTOToUser(UserRegistrationDTO userRegistrationDTO) {

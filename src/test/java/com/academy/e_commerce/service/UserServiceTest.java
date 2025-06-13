@@ -3,10 +3,8 @@ package com.academy.e_commerce.service;
 import com.academy.e_commerce.config.security.UserSecurityService;
 import com.academy.e_commerce.dto.UserDTO;
 import com.academy.e_commerce.dto.UserRegistrationDTO;
-import com.academy.e_commerce.mapper.UserMapper;
 import com.academy.e_commerce.model.Role;
 import com.academy.e_commerce.model.User;
-import com.academy.e_commerce.model.UserPrincipal;
 import com.academy.e_commerce.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -92,7 +90,7 @@ class UserServiceTest {
         UserDTO result = userService.registerCustomer(dto);
 
         assertNotNull(result);
-        assertEquals("customer@example.com", result.getEmail());
+        assertEquals("customer@example.com", result.email());
         verify(passwordEncoder).encode("customer123");
         verify(userRepository).save(any(User.class));
     }
