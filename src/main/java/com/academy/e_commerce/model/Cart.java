@@ -3,6 +3,9 @@ package com.academy.e_commerce.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity(name = "carts")
 @Getter
 @Setter
@@ -14,9 +17,11 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @OneToOne(mappedBy = "cart")
     private User user;
+
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
+    private List<CartProduct> items = new ArrayList<>();
 
     @Column(name = "subPrice", nullable = false)
     private Double subPrice;
