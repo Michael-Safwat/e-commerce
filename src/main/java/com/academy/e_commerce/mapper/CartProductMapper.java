@@ -20,7 +20,7 @@ public class CartProductMapper {
 
     public static CartProduct toEntity(CartProductDTO dto, Cart cart) {
         return CartProduct.builder()
-                .id(dto.id())  // Uses composite key
+                .id(dto.id())
                 .product(dto.product())
                 .subPrice(dto.subPrice())
                 .quantity(dto.quantity())
