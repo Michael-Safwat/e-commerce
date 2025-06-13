@@ -47,4 +47,8 @@ public class User {
 
     @OneToMany(mappedBy = "customer")
     List<PaymentCard> paymentCards;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "cart_id", referencedColumnName = "id")
+    private Cart cart;
 }

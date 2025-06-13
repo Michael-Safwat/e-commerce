@@ -1,5 +1,6 @@
 package com.academy.e_commerce.controller;
 
+import com.academy.e_commerce.config.security.jwt.Token;
 import com.academy.e_commerce.service.AuthService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -9,7 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
 
 @RestController
 @RequestMapping("${api.endpoint.base-url}")
@@ -23,7 +23,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> getLoginInfo(Authentication authentication) {
+    public ResponseEntity<Token> getLoginInfo(Authentication authentication) {
         return new ResponseEntity<>(this.authService.createJwtToken(authentication), HttpStatus.OK);
     }
 }

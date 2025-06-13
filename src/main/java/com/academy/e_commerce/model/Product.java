@@ -24,10 +24,11 @@ public class Product {
     @NotNull(message = "Description can't be empty")
     private String description;
 
-    @NotBlank(message = "Stock can't be empty")
+    @NotNull(message = "Stock can't be null")
+    @Min(value = 1, message = "Stock must be at least 1")
     private Integer stock;
 
-    @NotBlank(message = "Price can't be empty")
+    @NotNull(message = "Stock can't be null")
     @Positive(message = "Price must be greater than zero")
     private Double price;
 
