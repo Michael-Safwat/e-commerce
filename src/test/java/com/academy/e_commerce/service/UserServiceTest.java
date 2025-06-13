@@ -1,5 +1,6 @@
 package com.academy.e_commerce.service;
 
+import com.academy.e_commerce.config.security.UserSecurityService;
 import com.academy.e_commerce.dto.UserDTO;
 import com.academy.e_commerce.dto.UserRegistrationDTO;
 import com.academy.e_commerce.mapper.UserMapper;
@@ -30,6 +31,9 @@ class UserServiceTest {
     private UserRepository userRepository;
 
     @InjectMocks
+    private UserSecurityService userSecurityService;
+
+    @InjectMocks
     private UserService userService;
 
     @BeforeEach
@@ -58,7 +62,7 @@ class UserServiceTest {
         User user = getSampleAdminUser();
         when(userRepository.findByEmail("admin@example.com")).thenReturn(Optional.of(user));
 
-        UserDetails result = userService.loadUserByUsername("admin@example.com");
+        UserDetails result = userSecurityService.loadUserByUsername("admin@example.com");
 
         assertNotNull(result);
         assertEquals("admin@example.com", result.getUsername());
@@ -70,7 +74,7 @@ class UserServiceTest {
         when(userRepository.findByEmail("missing@example.com")).thenReturn(Optional.empty());
 
         assertThrows(UsernameNotFoundException.class, () ->
-                userService.loadUserByUsername("missing@example.com"));
+                userSecurityService.loadUserByUsername("missing@example.com"));
     }
     
 
