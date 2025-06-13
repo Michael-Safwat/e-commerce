@@ -1,23 +1,25 @@
 package com.academy.e_commerce.mapper;
 
 import com.academy.e_commerce.model.User;
-import com.academy.e_commerce.dto.CustomerRegistrationDTO;
+import com.academy.e_commerce.dto.UserRegistrationDTO;
 import com.academy.e_commerce.dto.UserDTO;
 
 public class UserMapper {
 
+    private UserMapper(){}
+
     public static UserDTO userToUserDTO(User user) {
-        return UserDTO.builder()
-                .email(user.getEmail())
-                .name(user.getName())
-                .build();
+        return new UserDTO(
+                user.getEmail(),
+                user.getName()
+                );
     }
 
-    public static User customerRegistrationDTOToUser(CustomerRegistrationDTO customerRegistrationDTO) {
+    public static User userRegistrationDTOToUser(UserRegistrationDTO userRegistrationDTO) {
         return User.builder()
-                .email(customerRegistrationDTO.getEmail())
-                .password(customerRegistrationDTO.getPassword())
-                .name(customerRegistrationDTO.getName())
+                .email(userRegistrationDTO.getEmail())
+                .password(userRegistrationDTO.getPassword())
+                .name(userRegistrationDTO.getName())
                 .build();
     }
 

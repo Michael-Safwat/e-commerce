@@ -10,7 +10,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CustomerRegistrationDTO {
+public class UserRegistrationDTO {
 
     @NotBlank(message = "email can't be empty")
     @Email(message = "must be valid email")

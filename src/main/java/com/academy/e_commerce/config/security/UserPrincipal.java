@@ -1,11 +1,10 @@
-package com.academy.e_commerce.model;
+package com.academy.e_commerce.config.security;
 
+import com.academy.e_commerce.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.util.StringUtils;
 
-import java.util.Arrays;
 import java.util.Collection;
 
 public record UserPrincipal(User user) implements UserDetails {
