@@ -1,0 +1,39 @@
+package com.academy.e_commerce.service;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.stereotype.Service;
+
+
+@Service
+@RequiredArgsConstructor
+public class EmailService {
+
+    private final JavaMailSender mailSender;
+
+    @Value("${api.endpoint.base-url}")
+    private String baseUrl;
+
+    public void sendVerificationEmail(String toEmail, String token) {
+        String subject = "Verify Your Email";
+        String verificationUrl = baseUrl + "/users/verify?token=" + token;
+
+        String body = """
+                Dear Customer,
+
+                Please click the following link to verify your account:
+                %s
+
+                If you did not register, please ignore this email.
+                """.formatted(verificationUrl);
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(toEmail);
+        message.setSubject(subject);
+        message.setText(body);
+
+        mailSender.send(message);
+    }
+}

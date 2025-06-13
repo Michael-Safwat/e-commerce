@@ -32,7 +32,7 @@ class UserServiceTest {
     private UserSecurityService userSecurityService;
 
     @InjectMocks
-    private UserService userService;
+    private UserRegistrationService userRegistrationService;
 
     @BeforeEach
     void setUp() {
@@ -87,7 +87,7 @@ class UserServiceTest {
             return saved;
         });
 
-        UserDTO result = userService.registerCustomer(dto);
+        UserDTO result = userRegistrationService.registerUser(dto);
 
         assertNotNull(result);
         assertEquals("customer@example.com", result.email());
