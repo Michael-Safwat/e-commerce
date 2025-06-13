@@ -1,11 +1,10 @@
 package com.academy.e_commerce.service;
 
+import com.academy.e_commerce.config.security.UserSecurityService;
 import com.academy.e_commerce.dto.UserDTO;
 import com.academy.e_commerce.dto.UserRegistrationDTO;
-import com.academy.e_commerce.mapper.UserMapper;
 import com.academy.e_commerce.model.Role;
 import com.academy.e_commerce.model.User;
-import com.academy.e_commerce.model.UserPrincipal;
 import com.academy.e_commerce.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,6 +27,9 @@ class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @InjectMocks
+    private UserSecurityService userSecurityService;
 
     @InjectMocks
     private UserService userService;
@@ -58,7 +60,7 @@ class UserServiceTest {
         User user = getSampleAdminUser();
         when(userRepository.findByEmail("admin@example.com")).thenReturn(Optional.of(user));
 
-        UserDetails result = userService.loadUserByUsername("admin@example.com");
+        UserDetails result = userSecurityService.loadUserByUsername("admin@example.com");
 
         assertNotNull(result);
         assertEquals("admin@example.com", result.getUsername());
@@ -70,7 +72,7 @@ class UserServiceTest {
         when(userRepository.findByEmail("missing@example.com")).thenReturn(Optional.empty());
 
         assertThrows(UsernameNotFoundException.class, () ->
-                userService.loadUserByUsername("missing@example.com"));
+                userSecurityService.loadUserByUsername("missing@example.com"));
     }
     
 
@@ -88,7 +90,7 @@ class UserServiceTest {
         UserDTO result = userService.registerCustomer(dto);
 
         assertNotNull(result);
-        assertEquals("customer@example.com", result.getEmail());
+        assertEquals("customer@example.com", result.email());
         verify(passwordEncoder).encode("customer123");
         verify(userRepository).save(any(User.class));
     }

@@ -1,13 +1,9 @@
 package com.academy.e_commerce.controller;
 
 import com.academy.e_commerce.dto.OrderDTO;
-import com.academy.e_commerce.model.User;
-import com.academy.e_commerce.model.UserPrincipal;
 import com.academy.e_commerce.service.OrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

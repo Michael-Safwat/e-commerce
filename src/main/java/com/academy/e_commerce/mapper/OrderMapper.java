@@ -8,13 +8,13 @@ public class OrderMapper {
     private OrderMapper(){}
 
     public static OrderDTO orderToOrderDTO(Order order){
-        return OrderDTO.builder()
-                .id(order.getId())
-                .shippingAddress(order.getShippingAddress())
-                .paymentMethod(order.getPaymentMethod())
-                .status(order.getStatus())
-                .totalPrice(order.getTotalPrice())
-                .createdAt(order.getCreatedAt())
-                .build();
+        return new OrderDTO(
+                order.getId(),
+                order.getStatus(),
+                order.getTotalPrice(),
+                order.getShippingAddress(),
+                order.getPaymentMethod(),
+                order.getCreatedAt()
+        );
     }
 }

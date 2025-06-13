@@ -23,7 +23,7 @@ public class ProductService {
 
         // Create a new product using ProductDTO and return Product
         public Product createProduct(ProductDTO productDTO) {
-            log.info("Creating new product: {}", productDTO.getName());
+            log.info("Creating new product: {}", productDTO.name());
             Product product = ProductMapper.productDtoToEntity(productDTO);
             return productRepository.save(product);
         }
