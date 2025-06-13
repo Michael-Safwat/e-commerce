@@ -1,6 +1,6 @@
 package com.academy.e_commerce.config.security.jwt;
 
-import com.academy.e_commerce.model.UserPrincipal;
+import com.academy.e_commerce.config.security.UserPrincipal;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;

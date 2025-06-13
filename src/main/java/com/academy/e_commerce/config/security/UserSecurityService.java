@@ -1,6 +1,5 @@
 package com.academy.e_commerce.config.security;
 
-import com.academy.e_commerce.model.UserPrincipal;
 import com.academy.e_commerce.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
