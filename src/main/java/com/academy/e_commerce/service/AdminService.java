@@ -29,7 +29,7 @@ public class AdminService {
     public UserDTO registerAdmin(UserRegistrationDTO admin) {
         admin.setPassword(passwordEncoder.encode(admin.getPassword()));
         User user = UserMapper.userRegistrationDTOToUser(admin);
-        user.setIsEnabled(false);
+        user.setIsVerified(false);
         user.setIsLocked(false);
         user.setRoles(Set.of(Role.ADMIN));
         User savedAdmin = userRepository.save(user);
