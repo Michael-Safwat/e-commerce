@@ -4,13 +4,15 @@ import com.academy.e_commerce.dto.ProductDTO;
 import com.academy.e_commerce.model.Product;
 import com.academy.e_commerce.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping("${api.endpoint.base-url}/products")
 @RequiredArgsConstructor
 public class ProductController {
 
@@ -18,28 +20,35 @@ public class ProductController {
 
         // Create a new product using ProductDTO
         @PostMapping
-        public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO) {
+        public ResponseEntity<Product> createProduct(@RequestBody ProductDTO productDTO) {
             return ResponseEntity.ok(productService.createProduct(productDTO));
         }
 
         // Get all products and return as DTOs
+        // Search products with category and name filters + pagination
+        @GetMapping("/search")
+        public ResponseEntity<Page<Product>> getAllProducts(
+                @RequestParam(name = "category", required = false) String category,
+                @RequestParam(name = "name", required = false) String name,
+                @PageableDefault(size = 10, page = 0) Pageable pageable) {
+            return ResponseEntity.ok(productService.getAllProductsFiltered(category, name, pageable));
+        }
+
+        // Get all products with pagination
         @GetMapping
-        public ResponseEntity<List<ProductDTO>> getAllProducts(@RequestParam(name = "category", required = false) String category,
-                                                               @RequestParam(name = "name", required = false) String name) {
-            return ResponseEntity.ok(productService.getAllProducts(category,name));
+        public ResponseEntity<Page<Product>> getAllProducts(@PageableDefault(size = 10, page = 0) Pageable pageable) {
+            return ResponseEntity.ok(productService.getAllProducts(pageable));
         }
 
         // Get a product by ID and return as DTO
         @GetMapping("/{id}")
-        public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id) {
-            return productService.getProductById(id)
-                    .map(ResponseEntity::ok)
-                    .orElseGet(() -> ResponseEntity.notFound().build());
+        public ResponseEntity<Product> getProductById(@PathVariable Long id) {
+            return ResponseEntity.ok(productService.getProductById(id));
         }
 
         // Update an existing product using DTO
         @PutMapping("/{id}")
-        public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long id, @RequestBody ProductDTO productDTO) {
+        public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody ProductDTO productDTO) {
             return ResponseEntity.ok(productService.updateProduct(id, productDTO));
         }
 

@@ -2,8 +2,9 @@ package com.academy.e_commerce.config;
 
 import com.academy.e_commerce.model.Role;
 import com.academy.e_commerce.model.User;
-import com.academy.e_commerce.service.UserService;
+import com.academy.e_commerce.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
@@ -11,10 +12,13 @@ import java.util.Set;
 @Component
 public class AdminInitializer implements CommandLineRunner {
 
-    private final UserService userService;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public AdminInitializer(UserService userService) {
-        this.userService = userService;
+
+    public AdminInitializer(UserRepository userRepository,PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -29,6 +33,8 @@ public class AdminInitializer implements CommandLineRunner {
                 .isLocked(false)
                 .build();
 
-        this.userService.registerAdmin(admin);
+        admin.setPassword(passwordEncoder.encode(admin.getPassword()));
+
+        this.userRepository.save(admin);
     }
 }
