@@ -1,6 +1,5 @@
 package com.academy.e_commerce.controller;
 
-import com.academy.e_commerce.dto.ProductDTO;
 import com.academy.e_commerce.model.Product;
 import com.academy.e_commerce.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -18,37 +17,21 @@ public class ProductController {
 
     private final ProductService productService;
 
-        @PostMapping
-        public ResponseEntity<Product> createProduct(@RequestBody ProductDTO productDTO) {
-            return ResponseEntity.ok(productService.createProduct(productDTO));
-        }
+    @GetMapping("/search")
+    public ResponseEntity<Page<Product>> getAllProducts(
+            @RequestParam(name = "category", required = false) String category,
+            @RequestParam(name = "name", required = false) String name,
+            @PageableDefault(size = 10, page = 0) Pageable pageable) {
+        return ResponseEntity.ok(productService.getAllProductsFiltered(category, name, pageable));
+    }
 
-        @GetMapping("/search")
-        public ResponseEntity<Page<Product>> getAllProducts(
-                @RequestParam(name = "category", required = false) String category,
-                @RequestParam(name = "name", required = false) String name,
-                @PageableDefault(size = 10, page = 0) Pageable pageable) {
-            return ResponseEntity.ok(productService.getAllProductsFiltered(category, name, pageable));
-        }
+    @GetMapping
+    public ResponseEntity<Page<Product>> getAllProducts(@PageableDefault(size = 10, page = 0) Pageable pageable) {
+        return ResponseEntity.ok(productService.getAllProducts(pageable));
+    }
 
-        @GetMapping
-        public ResponseEntity<Page<Product>> getAllProducts(@PageableDefault(size = 10, page = 0) Pageable pageable) {
-            return ResponseEntity.ok(productService.getAllProducts(pageable));
-        }
-
-        @GetMapping("/{id}")
-        public ResponseEntity<Product> getProductById(@PathVariable Long id) {
-            return ResponseEntity.ok(productService.getProductById(id));
-        }
-
-        @PutMapping("/{id}")
-        public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody ProductDTO productDTO) {
-            return ResponseEntity.ok(productService.updateProduct(id, productDTO));
-        }
-
-        @DeleteMapping("/{id}")
-        public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
-            productService.deleteProduct(id);
-            return ResponseEntity.noContent().build();
-        }
+    @GetMapping("/{id}")
+    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.getProductById(id));
+    }
 }

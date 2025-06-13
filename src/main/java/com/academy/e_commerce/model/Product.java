@@ -40,6 +40,6 @@ public class Product {
 
     @Min(value = 0, message = "Rating must be at least 0")
     @Max(value = 5, message = "Rating must be at most 5")
-    private int rating;
+    private Double rating;
 
 }
