@@ -20,39 +20,36 @@ public class SecurityConfiguration {
     @Value("${api.endpoint.base-url}")
     private String baseUrl;
 
-
     private final CustomBasicAuthenticationEntryPoint customBasicAuthenticationEntryPoint;
     private final CustomBearerTokenAuthenticationEntryPoint customBearerTokenAuthenticationEntryPoint;
     private final CustomBearerTokenAccessDeniedHandler customBearerTokenAccessDeniedHandler;
-    private final UserRequestAuthorizationManager userRequestAuthorizationManager;
 
-    public SecurityConfiguration(CustomBasicAuthenticationEntryPoint customBasicAuthenticationEntryPoint, CustomBearerTokenAuthenticationEntryPoint customBearerTokenAuthenticationEntryPoint, CustomBearerTokenAccessDeniedHandler customBearerTokenAccessDeniedHandler, UserRequestAuthorizationManager userRequestAuthorizationManager){
+    public SecurityConfiguration(CustomBasicAuthenticationEntryPoint customBasicAuthenticationEntryPoint,
+                                 CustomBearerTokenAuthenticationEntryPoint customBearerTokenAuthenticationEntryPoint,
+                                 CustomBearerTokenAccessDeniedHandler customBearerTokenAccessDeniedHandler){
         this.customBasicAuthenticationEntryPoint = customBasicAuthenticationEntryPoint;
         this.customBearerTokenAuthenticationEntryPoint = customBearerTokenAuthenticationEntryPoint;
         this.customBearerTokenAccessDeniedHandler = customBearerTokenAccessDeniedHandler;
-        this.userRequestAuthorizationManager = userRequestAuthorizationManager;
-
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
-                .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-                        .requestMatchers(HttpMethod.GET, this.baseUrl + "/login/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, this.baseUrl + "/customers/register/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, this.baseUrl + "/admins/register/**").hasAnyAuthority("ROLE_SUPER_ADMIN")
-                        .requestMatchers(HttpMethod.POST, this.baseUrl + "/orders/{orderId}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN", "ROLE_CUSTOMER")
-
-                        // Disallow anything else.
-                        .anyRequest().authenticated()
-                )
-                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(httpBasic -> httpBasic.authenticationEntryPoint(this.customBasicAuthenticationEntryPoint))
                 .oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer
                         .jwt(Customizer.withDefaults())
                         .authenticationEntryPoint(this.customBearerTokenAuthenticationEntryPoint)
                         .accessDeniedHandler(this.customBearerTokenAccessDeniedHandler))
-                .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
+                        .requestMatchers(HttpMethod.GET, this.baseUrl + "/login/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, this.baseUrl + "/customers/register/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, this.baseUrl + "/admins/register/**").hasAnyAuthority("ROLE_SUPER_ADMIN")
+                        .requestMatchers(HttpMethod.POST, this.baseUrl + "/orders/{orderId}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN", "ROLE_CUSTOMER")
+                        // Disallow anything else.
+                        .anyRequest().authenticated()
+                )
+                .csrf(AbstractHttpConfigurer::disable)
                 .build();
     }
 
@@ -60,5 +57,4 @@ public class SecurityConfiguration {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(12);
     }
-
 }
