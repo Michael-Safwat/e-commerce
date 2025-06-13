@@ -1,6 +1,6 @@
 package com.academy.e_commerce.service;
 
-import com.academy.e_commerce.config.security.JwtProvider;
+import com.academy.e_commerce.config.security.jwt.JwtProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 

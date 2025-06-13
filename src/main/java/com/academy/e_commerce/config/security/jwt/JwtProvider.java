@@ -1,4 +1,4 @@
-package com.academy.e_commerce.config.security;
+package com.academy.e_commerce.config.security.jwt;
 
 import com.academy.e_commerce.model.UserPrincipal;
 import org.springframework.security.core.Authentication;
