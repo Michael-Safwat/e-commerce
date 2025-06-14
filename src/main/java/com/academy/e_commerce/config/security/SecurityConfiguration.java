@@ -19,6 +19,7 @@ public class SecurityConfiguration {
 
     @Value("${api.endpoint.base-url}")
     private String baseUrl;
+
     private final String ROLE_SUPER_ADMIN = "ROLE_SUPER_ADMIN";
     private final String ROLE_ADMIN = "ROLE_ADMIN";
     private final String ROLE_CUSTOMER = "ROLE_CUSTOMER";
@@ -48,6 +49,8 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, this.baseUrl + "/login/**").permitAll()
                         .requestMatchers(HttpMethod.POST, this.baseUrl + "/users/register/**").permitAll()
                         .requestMatchers(HttpMethod.POST, this.baseUrl + "/admins/register/**").hasAnyAuthority(this.ROLE_SUPER_ADMIN)
+                        .requestMatchers(HttpMethod.PUT, this.baseUrl + "/admins/**").hasAnyAuthority(this.ROLE_SUPER_ADMIN)
+                        .requestMatchers(HttpMethod.DELETE, this.baseUrl + "/admins/**").hasAnyAuthority(this.ROLE_SUPER_ADMIN)
                         .requestMatchers(HttpMethod.POST, this.baseUrl + "/orders/{orderId}").hasAnyAuthority(this.ROLE_SUPER_ADMIN, this.ROLE_ADMIN, this.ROLE_CUSTOMER)
                         .requestMatchers(HttpMethod.GET, this.baseUrl + "/products/**").hasAnyAuthority(this.ROLE_SUPER_ADMIN, this.ROLE_ADMIN, this.ROLE_CUSTOMER)
                         .requestMatchers(HttpMethod.POST, this.baseUrl + "/portal/products/**").hasAnyAuthority(this.ROLE_SUPER_ADMIN, this.ROLE_ADMIN)

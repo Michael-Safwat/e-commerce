@@ -17,9 +17,9 @@ public class UserMapper {
 
     public static User userRegistrationDTOToUser(UserRegistrationDTO userRegistrationDTO) {
         return User.builder()
-                .email(userRegistrationDTO.getEmail())
-                .password(userRegistrationDTO.getPassword())
-                .name(userRegistrationDTO.getName())
+                .email(userRegistrationDTO.email())
+                .password(userRegistrationDTO.password())
+                .name(userRegistrationDTO.name())
                 .build();
     }
 

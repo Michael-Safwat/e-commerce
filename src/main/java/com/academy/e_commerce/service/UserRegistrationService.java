@@ -27,7 +27,7 @@ public class UserRegistrationService {
 
     public UserDTO registerUser(UserRegistrationDTO registrationDTO) {
 
-        Optional<User> existingUserOptional = userRepository.findByEmail(registrationDTO.getEmail());
+        Optional<User> existingUserOptional = userRepository.findByEmail(registrationDTO.email());
 
         if (existingUserOptional.isPresent()) {
             User existingUser = existingUserOptional.get();
@@ -40,9 +40,8 @@ public class UserRegistrationService {
             }
         }
 
-        registrationDTO.setPassword(passwordEncoder.encode(registrationDTO.getPassword()));
-
         User user = UserMapper.userRegistrationDTOToUser(registrationDTO);
+        user.setPassword(passwordEncoder.encode(registrationDTO.password()));
         user.setIsLocked(false);
         user.setRoles(Set.of(Role.CUSTOMER));
         user.setIsVerified(false);
