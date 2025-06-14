@@ -48,11 +48,8 @@ class UserServiceTest {
     }
 
     private UserRegistrationDTO getSampleCustomerDTO() {
-        UserRegistrationDTO dto = new UserRegistrationDTO();
-        dto.setEmail("customer@example.com");
-        dto.setPassword("customer123");
-        dto.setName("customer");
-        return dto;
+        return new UserRegistrationDTO("customer@example.com","customer123","customer");
+
     }
 
     @Test
