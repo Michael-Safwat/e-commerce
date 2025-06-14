@@ -26,8 +26,12 @@ public class Order {
 
     private String status;
     private BigDecimal totalPrice;
-    private String shippingAddress;
-    private String paymentMethod;
+
+    @OneToOne
+    private ShippingAddress shippingAddress;
+
+    @OneToOne
+    private PaymentCard paymentMethod;
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
