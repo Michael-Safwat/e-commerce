@@ -39,13 +39,17 @@ public class User {
     private Set<Role> roles;
 
     private Boolean isLocked = false;
-    private Boolean isEnabled = false;
+    @Column(nullable = false)
+    private Boolean isVerified = false;
 
     @OneToMany(mappedBy = "user")
     List<Order> orders;
 
     @OneToMany(mappedBy = "customer")
     List<PaymentCard> paymentCards;
+
+    @OneToMany(mappedBy = "user")
+    List<ShippingAddress> addresses;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "cart_id", referencedColumnName = "id")

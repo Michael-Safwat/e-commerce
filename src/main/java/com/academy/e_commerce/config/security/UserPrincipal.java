@@ -43,6 +43,6 @@ public record UserPrincipal(User user) implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return user.getIsEnabled();
+        return user.getIsVerified();
     }
 }

@@ -29,7 +29,7 @@ public class AdminInitializer implements CommandLineRunner {
                 .email("mike@example.com")
                 .password("123")
                 .roles(Set.of(Role.SUPER_ADMIN))
-                .isEnabled(true)
+                .isVerified(true)
                 .isLocked(false)
                 .build();
 

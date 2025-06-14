@@ -21,14 +21,12 @@ import java.util.stream.Collectors;
 public class ProductService {
     private final ProductRepository productRepository;
 
-        // Create a new product using ProductDTO and return Product
         public Product createProduct(ProductDTO productDTO) {
             log.info("Creating new product: {}", productDTO.name());
             Product product = ProductMapper.productDtoToEntity(productDTO);
             return productRepository.save(product);
         }
 
-        // Get all products filtered with pagination (returns Product instead of DTO)
         public Page<Product> getAllProductsFiltered(String category, String name, Pageable pageable) {
             log.info("Fetching products with filters: category={}, name={}", category, name);
 
@@ -48,20 +46,17 @@ public class ProductService {
             return products; // Returns Product instead of mapping to DTO
         }
 
-        // Get all products with pagination (returns Product)
         public Page<Product> getAllProducts(Pageable pageable) {
             log.info("Fetching all products with pagination");
             return productRepository.findAll(pageable);
         }
 
-        // Get a product by ID (returns Product)
         public Product getProductById(Long id) {
             log.info("Fetching product by ID: {}", id);
             return productRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Product not found for ID: " + id));
         }
 
-        // Update an existing product using ProductDTO and return Product
         public Product updateProduct(Long id, ProductDTO updatedProductDTO) {
             log.info("Updating product ID: {}", id);
             return productRepository.findById(id).map(product -> {
@@ -71,7 +66,6 @@ public class ProductService {
             }).orElseThrow(() -> new RuntimeException("Product not found"));
         }
 
-        // Delete a product by ID
         public void deleteProduct(Long id) {
             log.info("Deleting product ID: {}", id);
             productRepository.deleteById(id);
