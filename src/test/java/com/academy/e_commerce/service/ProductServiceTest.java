@@ -41,13 +41,14 @@ public class ProductServiceTest {
 
     private ProductDTO getSampleProductDTO() {
         return new ProductDTO(
+                1L,
                 "Sample Product",
                 "A sample product",
                 10,
                 19.99,
                 "Books",
                 "image.png",
-                4
+                4.0
                 );
     }
 
