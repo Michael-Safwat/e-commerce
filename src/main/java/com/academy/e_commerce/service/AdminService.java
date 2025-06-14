@@ -1,15 +1,17 @@
 package com.academy.e_commerce.service;
 
+import com.academy.e_commerce.advice.SuperAdminDeletionException;
 import com.academy.e_commerce.dto.UserDTO;
 import com.academy.e_commerce.dto.UserRegistrationDTO;
 import com.academy.e_commerce.mapper.UserMapper;
 import com.academy.e_commerce.model.Role;
 import com.academy.e_commerce.model.User;
 import com.academy.e_commerce.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -35,9 +37,9 @@ public class AdminService {
         User savedAdmin = userRepository.save(user);
         return UserMapper.userToUserDTO(savedAdmin);
     }
-    public List<UserDTO> getAllAdmins() {
-        List<User> admins = userRepository.findAll();
-        return admins.stream().map(UserMapper::userToUserDTO).toList();
+    public Page<UserDTO> getAllAdmins(Pageable pageable) {
+        Page<User> admins = userRepository.findAll(pageable);
+        return admins.map(UserMapper::userToUserDTO);
     }
 
     public Optional<UserDTO> getAdminById(Long id) {
@@ -45,6 +47,12 @@ public class AdminService {
                 .map(UserMapper::userToUserDTO);
     }
 
+    public Void deleteAdminById(Long id) {
 
-
+        Optional<User> user = this.userRepository.findById(id);
+        if(user.isPresent() && user.get().getRoles().contains(Role.SUPER_ADMIN))
+            throw new SuperAdminDeletionException("Cannot delete super admin account: ");
+        this.userRepository.deleteById(id);
+        return null;
+    }
 }
