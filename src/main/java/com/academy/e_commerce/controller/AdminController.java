@@ -3,6 +3,7 @@ package com.academy.e_commerce.controller;
 import com.academy.e_commerce.dto.UserDTO;
 import com.academy.e_commerce.dto.UserRegistrationDTO;
 import com.academy.e_commerce.service.AdminService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -22,7 +23,7 @@ public class AdminController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserDTO> registerAdmin(@RequestBody UserRegistrationDTO admin) {
+    public ResponseEntity<UserDTO> registerAdmin(@RequestBody @Valid UserRegistrationDTO admin) {
         UserDTO savedAdmin = adminService.registerAdmin(admin);
         return new ResponseEntity<>(savedAdmin, HttpStatus.CREATED);
     }
@@ -39,6 +40,11 @@ public class AdminController {
         Optional<UserDTO> adminDto = adminService.getAdminById(id);
         return adminDto.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserDTO> updateAdminById(@PathVariable("id") Long id, @Valid @RequestBody UserDTO userDTO){
+        return new ResponseEntity<>(this.adminService.updateAdminById(id, userDTO), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

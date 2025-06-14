@@ -29,8 +29,8 @@ public class AdminService {
     }
 
     public UserDTO registerAdmin(UserRegistrationDTO admin) {
-        admin.setPassword(passwordEncoder.encode(admin.getPassword()));
         User user = UserMapper.userRegistrationDTOToUser(admin);
+        user.setPassword(passwordEncoder.encode(admin.password()));
         user.setIsVerified(false);
         user.setIsLocked(false);
         user.setRoles(Set.of(Role.ADMIN));
@@ -45,6 +45,16 @@ public class AdminService {
     public Optional<UserDTO> getAdminById(Long id) {
         return userRepository.findById(id)
                 .map(UserMapper::userToUserDTO);
+    }
+
+    public UserDTO updateAdminById(Long id, UserDTO userDTO) {
+
+        User user = this.userRepository.findById(id)
+                .orElseThrow(()-> new RuntimeException("No such user found"));
+
+        user.setEmail(userDTO.email());
+        user.setName(userDTO.name());
+        return UserMapper.userToUserDTO(this.userRepository.save(user));
     }
 
     public Void deleteAdminById(Long id) {
