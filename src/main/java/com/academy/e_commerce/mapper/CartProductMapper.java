@@ -24,7 +24,7 @@ public class CartProductMapper {
                 .product(dto.product())
                 .subPrice(dto.subPrice())
                 .quantity(dto.quantity())
-                .cart(cart) // Explicitly setting the cart reference
+                .cart(cart)
                 .build();
     }
 }
