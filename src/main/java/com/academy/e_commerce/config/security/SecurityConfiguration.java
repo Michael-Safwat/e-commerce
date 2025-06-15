@@ -23,6 +23,7 @@ public class SecurityConfiguration {
     private final String ROLE_SUPER_ADMIN = "ROLE_SUPER_ADMIN";
     private final String ROLE_ADMIN = "ROLE_ADMIN";
     private final String ROLE_CUSTOMER = "ROLE_CUSTOMER";
+    private static final String CART_BASE_PATH = "/users/{userId}/cart";
 
     private final CustomBasicAuthenticationEntryPoint customBasicAuthenticationEntryPoint;
     private final CustomBearerTokenAuthenticationEntryPoint customBearerTokenAuthenticationEntryPoint;
@@ -56,6 +57,11 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, this.baseUrl + "/portal/products/**").hasAnyAuthority(this.ROLE_SUPER_ADMIN, this.ROLE_ADMIN)
                         .requestMatchers(HttpMethod.PUT, this.baseUrl + "/portal/products/**").hasAnyAuthority(this.ROLE_SUPER_ADMIN, this.ROLE_ADMIN)
                         .requestMatchers(HttpMethod.DELETE, this.baseUrl + "/portal/products/**").hasAnyAuthority(this.ROLE_SUPER_ADMIN, this.ROLE_ADMIN)
+                        .requestMatchers(HttpMethod.DELETE, this.baseUrl + "/orders/users/{userId}/checkoutOrder/{cartId}").hasAnyAuthority(this.ROLE_CUSTOMER)
+                        .requestMatchers(HttpMethod.POST, this.baseUrl + CART_BASE_PATH).hasAnyAuthority(this.ROLE_CUSTOMER)
+                        .requestMatchers(HttpMethod.DELETE, this.baseUrl + CART_BASE_PATH).hasAnyAuthority(this.ROLE_CUSTOMER)
+                        .requestMatchers(HttpMethod.GET, this.baseUrl + CART_BASE_PATH).hasAnyAuthority(this.ROLE_CUSTOMER)
+
                         // Disallow anything else.
                         .anyRequest().authenticated()
                 )

@@ -1,5 +1,8 @@
 package com.academy.e_commerce.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,11 +21,13 @@ public class Cart {
     private Long id;
 
     @OneToOne(mappedBy = "cart")
+    @JsonBackReference
     private User user;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<CartProduct> items = new ArrayList<>();
 
-    @Column(name = "subPrice", nullable = false)
-    private Double subPrice;
+    @Column(name = "totalPrice", nullable = false)
+    private Double totalPrice;
 }

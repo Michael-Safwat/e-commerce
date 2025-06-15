@@ -47,13 +47,10 @@ class UserServiceTest {
         return user;
     }
 
-//    private UserRegistrationDTO getSampleCustomerDTO() {
-//        UserRegistrationDTO dto = new UserRegistrationDTO();
-//        dto.setEmail("customer@example.com");
-//        dto.setPassword("customer123");
-//        dto.setName("customer");
-//        return dto;
-//    }
+    private UserRegistrationDTO getSampleCustomerDTO() {
+        return new UserRegistrationDTO("customer@example.com","customer123","customer");
+
+    }
 
     @Test
     void testLoadUserByUsername_found() {
@@ -76,22 +73,22 @@ class UserServiceTest {
     }
     
 
-//    @Test
-//    void testRegisterCustomer() {
-//        UserRegistrationDTO dto = getSampleCustomerDTO();
-//
-//        when(passwordEncoder.encode("customer123")).thenReturn("hashed-customer123");
-//        when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
-//            User saved = invocation.getArgument(0);
-//            saved.setId(1L);
-//            return saved;
-//        });
-//
-//        UserDTO result = userRegistrationService.registerUser(dto);
-//
-//        assertNotNull(result);
-//        assertEquals("customer@example.com", result.email());
-//        verify(passwordEncoder).encode("customer123");
-//        verify(userRepository).save(any(User.class));
-//    }
+    @Test
+    void testRegisterCustomer() {
+        UserRegistrationDTO dto = getSampleCustomerDTO();
+
+        when(passwordEncoder.encode("customer123")).thenReturn("hashed-customer123");
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
+            User saved = invocation.getArgument(0);
+            saved.setId(1L);
+            return saved;
+        });
+
+        UserDTO result = userRegistrationService.registerUser(dto);
+
+        assertNotNull(result);
+        assertEquals("customer@example.com", result.email());
+        verify(passwordEncoder).encode("customer123");
+        verify(userRepository).save(any(User.class));
+    }
 }
