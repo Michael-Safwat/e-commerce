@@ -35,9 +35,9 @@ public class OrderController {
         return ResponseEntity.ok(this.orderService.getOrderById(orderId, userId));
     }
 
-    @PostMapping("/checkoutOrder/{cartId}")
+    @PostMapping("/checkoutOrder")
     @PreAuthorize("authentication.principal.claims['userId'] == #userId")
-    public ResponseEntity<Order> checkoutOrder(@PathVariable("userId")Long userId, @PathVariable("cartId")Long cartId){
-        return ResponseEntity.ok(this.orderService.checkoutOrder(userId, cartId));
+    public ResponseEntity<Order> checkoutOrder(@PathVariable("userId")Long userId){
+        return ResponseEntity.ok(this.orderService.checkoutOrder(userId));
     }
 }

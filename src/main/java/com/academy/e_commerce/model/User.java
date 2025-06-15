@@ -1,11 +1,15 @@
 package com.academy.e_commerce.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
@@ -15,7 +19,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class User {
+public class User{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,13 +47,14 @@ public class User {
     private Boolean isVerified = false;
 
     @OneToMany(mappedBy = "user")
-    List<Order> orders;
+    @JsonIgnore
+    private List<Order> orders;
 
     @OneToMany(mappedBy = "customer")
-    List<PaymentCard> paymentCards;
+    private List<PaymentCard> paymentCards;
 
     @OneToMany(mappedBy = "user")
-    List<ShippingAddress> addresses;
+    private List<ShippingAddress> addresses;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "cart_id", referencedColumnName = "id")
