@@ -26,7 +26,6 @@ public class Cart {
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
     @JsonManagedReference
-//    @JsonIgnore
     private List<CartProduct> items = new ArrayList<>();
 
     @Column(name = "totalPrice", nullable = false)
