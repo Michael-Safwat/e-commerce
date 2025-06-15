@@ -1,5 +1,6 @@
 package com.academy.e_commerce.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,16 +11,16 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CartProduct {
-    @EmbeddedId
-    private CartProductId id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("cartId")
     @JoinColumn(name = "cart_id", nullable = false)
+    @JsonIgnore
     private Cart cart;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("productId")
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
@@ -29,3 +30,4 @@ public class CartProduct {
     @Column(name = "subPrice", nullable = false)
     private Double subPrice;
 }
+
