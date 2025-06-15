@@ -1,4 +1,4 @@
-package com.academy.e_commerce.service;
+package com.academy.e_commerce.service.cartService;
 
 import com.academy.e_commerce.model.Cart;
 import com.academy.e_commerce.model.CartProduct;
@@ -8,8 +8,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 
 @Service
@@ -21,12 +19,15 @@ public class CartPreviewService {
     private final CartProductRepository cartProductRepository;
 
     @Transactional
-    public List<CartProduct> getCartItems(Long userId) {
-        log.debug("Fetching cart items for user {}", userId);
+    public Cart getCartWithItems(Long userId) {
+        log.debug("Fetching cart for user {}", userId);
 
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Cart not found for user ID: " + userId));
 
-        return cartProductRepository.findByCart(cart);
+        cart.setItems(cartProductRepository.findByCart(cart));
+
+        return cart;
     }
+
 }
