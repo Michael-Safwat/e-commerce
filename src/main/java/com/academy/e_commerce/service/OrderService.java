@@ -4,10 +4,12 @@ import com.academy.e_commerce.advice.OrderNotFoundException;
 import com.academy.e_commerce.dto.OrderDTO;
 import com.academy.e_commerce.mapper.CartToOrderMapper;
 import com.academy.e_commerce.mapper.OrderMapper;
+import com.academy.e_commerce.model.Cart;
 import com.academy.e_commerce.model.CartProduct;
 import com.academy.e_commerce.model.Order;
 import com.academy.e_commerce.model.OrderProduct;
 import com.academy.e_commerce.repository.OrderRepository;
+import com.academy.e_commerce.service.cartService.CartPreviewService;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -43,30 +45,32 @@ public class OrderService {
             throw new OrderNotFoundException("Order with ID " + orderId + " not found.");
     }
 
+    // todo: locking for race condition on creating order
     @Transactional
-    public Order checkoutOrder(Long userId, Long cartId) {
+    public Order checkoutOrder(Long userId) {
 
-        // to place an order, we first need to get the products from the cart
-        // then create a new order and add products to it, and add all arguments to it
-        // clear the current cart
-        // save the order
+        // get user cart
+        Cart cart = this.cartPreviewService.getCartWithItems(userId);
 
-        List<CartProduct> cartProducts = this.cartPreviewService.getCartItems(userId);
-
+        // populate user products from cart
         Set<OrderProduct> orderProducts;
         Order order = new Order();
-        orderProducts = cartProducts.stream().map(cartProduct ->
+        orderProducts = cart.getItems().stream().map(cartProduct ->
                 CartToOrderMapper.CartProductToOrderProduct(cartProduct, order))
                 .collect(Collectors.toSet());
-
 
         order.setStatus("PENDING");
         order.setUser(this.userService.getUserById(userId));
         order.setCreatedAt(LocalDateTime.now());
         order.setShippingAddress("ay7aga");
-        order.setTotalPrice(100.0);
+        order.setTotalPrice(cart.getTotalPrice());
         order.setOrderProducts(orderProducts);
 
+        // todo: update products stock
+
+        // todo: clear cart
+
+        // create order
         return this.orderRepository.save(order);
     }
 }
