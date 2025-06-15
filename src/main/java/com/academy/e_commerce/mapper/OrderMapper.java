@@ -13,7 +13,6 @@ public class OrderMapper {
                 order.getStatus(),
                 order.getTotalPrice(),
                 order.getShippingAddress(),
-                order.getPaymentMethod(),
                 order.getCreatedAt()
         );
     }

@@ -57,6 +57,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, this.baseUrl + "/portal/products/**").hasAnyAuthority(this.ROLE_SUPER_ADMIN, this.ROLE_ADMIN)
                         .requestMatchers(HttpMethod.PUT, this.baseUrl + "/portal/products/**").hasAnyAuthority(this.ROLE_SUPER_ADMIN, this.ROLE_ADMIN)
                         .requestMatchers(HttpMethod.DELETE, this.baseUrl + "/portal/products/**").hasAnyAuthority(this.ROLE_SUPER_ADMIN, this.ROLE_ADMIN)
+                        .requestMatchers(HttpMethod.DELETE, this.baseUrl + "/orders/users/{userId}/checkoutOrder/{cartId}").hasAnyAuthority(this.ROLE_CUSTOMER)
                         .requestMatchers(HttpMethod.POST, this.baseUrl + CART_BASE_PATH).hasAnyAuthority(this.ROLE_CUSTOMER)
                         .requestMatchers(HttpMethod.DELETE, this.baseUrl + CART_BASE_PATH).hasAnyAuthority(this.ROLE_CUSTOMER)
                         .requestMatchers(HttpMethod.GET, this.baseUrl + CART_BASE_PATH).hasAnyAuthority(this.ROLE_CUSTOMER)
