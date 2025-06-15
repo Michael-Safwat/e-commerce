@@ -47,4 +47,11 @@ public class User {
 
     @OneToMany(mappedBy = "customer")
     List<PaymentCard> paymentCards;
+
+    @OneToMany(mappedBy = "user")
+    List<ShippingAddress> addresses;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "cart_id", referencedColumnName = "id")
+    private Cart cart;
 }

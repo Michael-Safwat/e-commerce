@@ -13,15 +13,16 @@ public class ProductMapper {
             return null;
         }
 
-        return ProductDTO.builder()
-                .name(product.getName())
-                .description(product.getDescription())
-                .stock(product.getStock())
-                .price(product.getPrice())
-                .category(product.getCategory())
-                .image(product.getImage())
-                .rating(product.getRating())
-                .build();
+        return new ProductDTO(
+                product.getId(),
+                product.getName(),
+                product.getDescription(),
+                product.getStock(),
+                product.getPrice(),
+                product.getCategory(),
+                product.getImage(),
+                product.getRating()
+                );
     }
 
     public static Product productDtoToEntity(ProductDTO dto) {
@@ -30,13 +31,13 @@ public class ProductMapper {
         }
 
         return Product.builder()
-                .name(dto.getName())
-                .description(dto.getDescription())
-                .stock(dto.getStock())
-                .price(dto.getPrice())
-                .category(dto.getCategory())
-                .image(dto.getImage())
-                .rating(dto.getRating())
+                .name(dto.name())
+                .description(dto.description())
+                .stock(dto.stock())
+                .price(dto.price())
+                .category(dto.category())
+                .image(dto.image())
+                .rating(dto.rating())
                 .build();
     }
 }
