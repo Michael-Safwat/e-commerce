@@ -9,23 +9,23 @@ public class CartProductMapper {
     private CartProductMapper() {
     }
 
-    public static CartProductDTO toDto(CartProduct cartProduct) {
-        return new CartProductDTO(
-                cartProduct.getId(),
-                cartProduct.getProduct(),
-                cartProduct.getSubPrice(),
-                cartProduct.getQuantity()
-        );
-    }
+//    public static CartProductDTO toDto(CartProduct cartProduct) {
+//        return new CartProductDTO(
+//                cartProduct.getId(),
+//                cartProduct.getProduct(),
+//                cartProduct.getSubPrice(),
+//                cartProduct.getQuantity()
+//        );
+//    }
 
-    public static CartProduct toEntity(CartProductDTO dto, Cart cart) {
-        return CartProduct.builder()
-                .id(dto.id())
-                .product(dto.product())
-                .subPrice(dto.subPrice())
-                .quantity(dto.quantity())
-                .cart(cart)
-                .build();
-    }
+//    public static CartProduct toEntity(CartProductDTO dto, Cart cart) {
+//        return CartProduct.builder()
+//                .id(dto.id())
+//                .product(dto.product())
+//                .subPrice(dto.subPrice())
+//                .quantity(dto.quantity())
+//                .cart(cart)
+//                .build();
+//    }
 }
 
