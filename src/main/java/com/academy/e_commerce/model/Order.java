@@ -1,11 +1,12 @@
 package com.academy.e_commerce.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.math.BigDecimal;
+import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.Set;
 
 @Entity(name = "orders")
@@ -14,7 +15,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Order {
+public class Order{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,24 +26,14 @@ public class Order {
     private User user;
 
     private String status;
-    private BigDecimal totalPrice;
+    private Double totalPrice;
 
-    @OneToOne
-    private ShippingAddress shippingAddress;
+    private String shippingAddress;
 
-    @OneToOne
-    private PaymentCard paymentMethod;
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<OrderProduct> orderItems = new HashSet<>();
+    @JsonManagedReference
+    private Set<OrderProduct> orderProducts;
 
-    public void addOrderItem(OrderProduct orderItem) {
-        this.orderItems.add(orderItem);
-        orderItem.setOrder(this);
-    }
-    public void removeOrderItem(OrderProduct orderItem) {
-        this.orderItems.remove(orderItem);
-        orderItem.setOrder(null);
-    }
 }
