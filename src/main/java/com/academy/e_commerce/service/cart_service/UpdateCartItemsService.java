@@ -40,7 +40,6 @@ public class UpdateCartItemsService {
         cartHelperService.validateStock(product, newQuantity);
 
         cartProduct.setQuantity(newQuantity);
-        cartProduct.setSubPrice(cartProduct.getQuantity() * product.getPrice());
 
         cartProductRepository.save(cartProduct);
         cartHelperService.updateCartSubTotal(cart);
@@ -71,7 +70,6 @@ public class UpdateCartItemsService {
             newQuantity = 0;
 
         cartProduct.setQuantity(newQuantity);
-        cartProduct.setSubPrice(cartProduct.getQuantity() * product.getPrice());
 
         cartProductRepository.save(cartProduct);
         cartHelperService.updateCartSubTotal(cart);
@@ -97,7 +95,6 @@ public class UpdateCartItemsService {
         cartHelperService.validateStock(product, quantity);
 
         cartProduct.setQuantity(quantity);
-        cartProduct.setSubPrice(quantity * product.getPrice());
 
         cartProductRepository.save(cartProduct);
         cartHelperService.updateCartSubTotal(cart);

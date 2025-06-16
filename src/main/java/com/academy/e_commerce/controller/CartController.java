@@ -1,6 +1,6 @@
 package com.academy.e_commerce.controller;
 
-import com.academy.e_commerce.dto.cart.CartRequest;
+import com.academy.e_commerce.dto.CartRequest;
 import com.academy.e_commerce.model.Cart;
 import com.academy.e_commerce.service.cart_service.CartPreviewService;
 import com.academy.e_commerce.service.cart_service.AddProductToCartService;

@@ -56,7 +56,6 @@ public class AddProductToCartService {
                 .cart(cart)
                 .product(product)
                 .quantity(quantity)
-                .subPrice(quantity * product.getPrice())
                 .build();
 
         cartProductRepository.save(cartProduct);

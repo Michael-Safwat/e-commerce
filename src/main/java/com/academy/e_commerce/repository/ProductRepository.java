@@ -13,9 +13,9 @@ import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-//    @Lock(LockModeType.PESSIMISTIC_WRITE)
-//    @Query("SELECT p FROM Product p WHERE p.id = :productId")
-//    Optional<Product> findByIdWithLock(@Param("productId") Long productId);
+    @Query(value = "SELECT * FROM products WHERE id = :productId FOR UPDATE", nativeQuery = true)
+    Optional<Product> findByIdWithLock(@Param("productId") Long productId);
+
 
     /**
      * Finds products by category and name (case-insensitive for both).
