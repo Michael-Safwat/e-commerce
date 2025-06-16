@@ -1,4 +1,4 @@
-package com.academy.e_commerce.service.cartService;
+package com.academy.e_commerce.service.cart_service;
 
 import com.academy.e_commerce.model.Cart;
 import com.academy.e_commerce.model.CartProduct;

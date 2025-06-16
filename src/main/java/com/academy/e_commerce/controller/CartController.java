@@ -2,9 +2,9 @@ package com.academy.e_commerce.controller;
 
 import com.academy.e_commerce.dto.cart.CartRequest;
 import com.academy.e_commerce.model.Cart;
-import com.academy.e_commerce.service.cartService.CartPreviewService;
-import com.academy.e_commerce.service.cartService.AddProductToCartService;
-import com.academy.e_commerce.service.cartService.UpdateCartItemsService;
+import com.academy.e_commerce.service.cart_service.CartPreviewService;
+import com.academy.e_commerce.service.cart_service.AddProductToCartService;
+import com.academy.e_commerce.service.cart_service.UpdateCartItemsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
