@@ -52,6 +52,7 @@ public class AdminInitializer implements CommandLineRunner {
                 .build();
 
         productRepository.save(product);
+
     }
 
 

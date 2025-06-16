@@ -1,15 +1,19 @@
 package com.academy.e_commerce.service;
 
+import com.academy.e_commerce.advice.InsufficientStockException;
 import com.academy.e_commerce.advice.OrderNotFoundException;
+import com.academy.e_commerce.dto.OrderConfirmationRequest;
 import com.academy.e_commerce.dto.OrderDTO;
 import com.academy.e_commerce.mapper.CartToOrderMapper;
 import com.academy.e_commerce.mapper.OrderMapper;
-import com.academy.e_commerce.model.Cart;
-import com.academy.e_commerce.model.Order;
-import com.academy.e_commerce.model.OrderProduct;
+import com.academy.e_commerce.model.*;
 import com.academy.e_commerce.repository.OrderRepository;
+import com.academy.e_commerce.repository.ProductRepository;
 import com.academy.e_commerce.service.cart_service.CartPreviewService;
+import com.academy.e_commerce.service.cart_service.ClearCartService;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,16 +23,15 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class OrderService {
     private final OrderRepository orderRepository;
     private final CartPreviewService cartPreviewService;
     private final UserService userService;
+    private final ClearCartService clearCartService;
+    private final ProductRepository productRepository;
 
-    public OrderService(OrderRepository orderRepository, CartPreviewService cartPreviewService, UserService userService) {
-        this.orderRepository = orderRepository;
-        this.cartPreviewService = cartPreviewService;
-        this.userService = userService;
-    }
 
     public Page<OrderDTO> getAllOrdersByCustomerId(Long customerId, Pageable pageable) {
         Page<Order> orders = this.orderRepository.findAllByUser_Id(customerId, pageable);
@@ -44,14 +47,25 @@ public class OrderService {
             throw new OrderNotFoundException("Order with ID " + orderId + " not found.");
     }
 
-    // todo: locking for race condition on creating order
     @Transactional
-    public Order checkoutOrder(Long userId) {
+    public Order checkoutOrder(Long userId , OrderConfirmationRequest request) {
 
-        // get user cart
         Cart cart = this.cartPreviewService.getCartWithItems(userId);
 
-        // populate user products from cart
+        if (cart.getItems().isEmpty()) {
+            throw new RuntimeException("Cart is empty, cannot proceed with checkout.");
+        }
+
+        // Validate stock and deduce qty
+        for (CartProduct cartProduct : cart.getItems()) {
+            Product product = productRepository.findById(cartProduct.getProduct().getId())
+                    .orElseThrow(() -> new RuntimeException("Product not found"));
+            validateStock(product, cartProduct.getQuantity());
+
+            product.setStock(product.getStock() - cartProduct.getQuantity());
+            productRepository.save(product);
+        }
+
         Set<OrderProduct> orderProducts;
         Order order = new Order();
         orderProducts = cart.getItems().stream().map(cartProduct ->
@@ -61,15 +75,19 @@ public class OrderService {
         order.setStatus("PENDING");
         order.setUser(this.userService.getUserById(userId));
         order.setCreatedAt(LocalDateTime.now());
-        order.setShippingAddress("ay7aga");
+        order.setShippingAddress(request.shippingAddress());
         order.setTotalPrice(cart.getTotalPrice());
         order.setOrderProducts(orderProducts);
 
-        // todo: update products stock
+        clearCartService.clearCart(cart.getId());
 
-        // todo: clear cart
-
-        // create order
         return this.orderRepository.save(order);
     }
+
+    private void validateStock(Product product, int requestedQuantity) {
+        if (product.getStock() < requestedQuantity) {
+            throw new InsufficientStockException(product.getId(), requestedQuantity, product.getStock());
+        }
+    }
+
 }

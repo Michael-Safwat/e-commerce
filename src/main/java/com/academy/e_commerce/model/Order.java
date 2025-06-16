@@ -3,6 +3,7 @@ package com.academy.e_commerce.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.io.Serializable;
@@ -28,6 +29,7 @@ public class Order{
     private String status;
     private Double totalPrice;
 
+    @NotBlank
     private String shippingAddress;
 
     private LocalDateTime createdAt;
