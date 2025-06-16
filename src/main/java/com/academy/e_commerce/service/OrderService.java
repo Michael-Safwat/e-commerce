@@ -90,7 +90,24 @@ public class OrderService {
         orderRepository.save(order);
     }
 
-    //todo compare pay amount to cart total price -> throw exception
+    @Transactional
+    public void removeOrder(Long orderId) {
+        log.debug("Rolling back products of order {}", orderId);
+
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        // Restore stock
+        for (OrderProduct orderProduct : order.getOrderProducts()) {
+            Product product = productRepository.findByIdWithLock(orderProduct.getProduct().getId())
+                    .orElseThrow(() -> new RuntimeException("Product not found"));
+
+            product.setStock(product.getStock() + orderProduct.getQuantity());
+            productRepository.save(product);
+        }
+       // orderRepository.delete(order);
+    }
+
 
 
     private void validateStock(Product product, int requestedQuantity) {
