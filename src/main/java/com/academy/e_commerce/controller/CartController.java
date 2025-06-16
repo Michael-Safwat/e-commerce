@@ -2,15 +2,12 @@ package com.academy.e_commerce.controller;
 
 import com.academy.e_commerce.dto.cart.CartRequest;
 import com.academy.e_commerce.model.Cart;
-import com.academy.e_commerce.model.CartProduct;
 import com.academy.e_commerce.service.cartService.CartPreviewService;
 import com.academy.e_commerce.service.cartService.AddProductToCartService;
 import com.academy.e_commerce.service.cartService.UpdateCartItemsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("${api.endpoint.base-url}/users/{userId}/cart")
@@ -27,6 +24,15 @@ public class CartController {
             @PathVariable("userId") Long customerId,
             @RequestBody CartRequest request) {
         Cart cartDto = addProductToCartService.addNewProductToCart(customerId, request.productId(), request.quantity());
+        return ResponseEntity.ok(cartDto);
+    }
+
+    @PatchMapping()
+    //@PreAuthorize("authentication.principal.claims['userId'] == #userId")
+    public ResponseEntity<Cart> setProductQuantity(
+            @PathVariable("userId") Long customerId,
+            @RequestBody CartRequest request) {
+        Cart cartDto = updateCartItemsService.setProductQuantity(customerId, request.productId(), request.quantity());
         return ResponseEntity.ok(cartDto);
     }
 

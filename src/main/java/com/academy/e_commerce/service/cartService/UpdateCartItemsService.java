@@ -81,5 +81,31 @@ public class UpdateCartItemsService {
         return cart;
     }
 
+    @Transactional
+    public Cart setProductQuantity(Long userId, Long productId, Integer quantity) {
+        log.debug("Setting quantity for product {} in cart for user {}", productId, userId);
+
+        Cart cart = cartRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Cart not found for user ID: " + userId));
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        CartProduct cartProduct = cartProductRepository.findByCartAndProduct(cart, product)
+                .orElseThrow(() -> new RuntimeException("Product not found in cart"));
+
+        cartHelperService.validateStock(product, quantity);
+
+        cartProduct.setQuantity(quantity);
+        cartProduct.setSubPrice(quantity * product.getPrice());
+
+        cartProductRepository.save(cartProduct);
+        cartHelperService.updateCartSubTotal(cart);
+
+        cart.setItems(cartProductRepository.findByCart(cart));
+
+        return cart;
+    }
+
 
 }
