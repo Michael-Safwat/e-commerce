@@ -24,9 +24,9 @@ public class UserRegistrationController {
 //    }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody UserRegistrationDTO dto) {
-        String userVerificationToken = userRegistrationService.registerUser(dto);
-        return ResponseEntity.ok(userVerificationToken);
+    public ResponseEntity<UserDTO> register(@RequestBody UserRegistrationDTO dto) {
+        UserDTO user = userRegistrationService.registerUser(dto);
+        return ResponseEntity.ok(user);
     }
 
     @GetMapping("/verify")

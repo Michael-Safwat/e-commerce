@@ -25,7 +25,7 @@ public class UserRegistrationService {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
 
-    public String registerUser(UserRegistrationDTO registrationDTO) {
+    public UserDTO registerUser(UserRegistrationDTO registrationDTO) {
 
         Optional<User> existingUserOptional = userRepository.findByEmail(registrationDTO.email());
 
@@ -48,22 +48,21 @@ public class UserRegistrationService {
         userRepository.save(user);
 
 
-        return  generateAndSendVerificationToken(user);
+        return  UserMapper.userToUserDTO(user);
 
     }
 
-    private String generateAndSendVerificationToken(User user) {
+    private void generateAndSendVerificationToken(User user) {
         String token = UUID.randomUUID().toString();
 
         VerificationToken verificationToken = new VerificationToken();
         verificationToken.setToken(token);
         verificationToken.setUser(user);
-        verificationToken.setExpiryDate(LocalDateTime.now().plusHours(24));
+        verificationToken.setExpiryDate(LocalDateTime.now().plusHours(5));
 
         verificationTokenRepository.save(verificationToken);
 
-//        emailService.sendVerificationEmail(user.getEmail(), token);
-        return token;
+        emailService.sendVerificationEmail(user.getEmail(), token, user.getName());
     }
 
     private void resendVerification(User user) {
@@ -84,6 +83,6 @@ public class UserRegistrationService {
         user.setIsVerified(true);
         userRepository.save(user);
 
-        verificationTokenRepository.delete(verificationToken); // Clean up
+        verificationTokenRepository.delete(verificationToken);
     }
 }

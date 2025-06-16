@@ -50,7 +50,7 @@ public class AuthService {
         user.setResetExpiryDate(LocalDateTime.now().plusHours(1));
         userRepository.save(user);
 
-//        emailService.sendReactivationEmail(email, token);
+        emailService.sendReactivationEmail(email, token);
         return token;
     }
 

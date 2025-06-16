@@ -16,18 +16,18 @@ public class EmailService {
     @Value("${api.endpoint.base-url}")
     private String baseUrl;
 
-    public void sendVerificationEmail(String toEmail, String token) {
+    public void sendVerificationEmail(String toEmail, String name, String token) {
         String subject = "Verify Your Email";
         String verificationUrl = baseUrl + "/users/verify?token=" + token;
 
         String body = """
-                Dear Customer,
+            Dear %s,
 
-                Please click the following link to verify your account:
-                %s
+            Please click the following link to verify your account:
+            %s
 
-                If you did not register, please ignore this email.
-                """.formatted(verificationUrl);
+            If you did not register, please ignore this email.
+            """.formatted(name, verificationUrl);
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(toEmail);
@@ -36,6 +36,7 @@ public class EmailService {
 
         mailSender.send(message);
     }
+
 
     public void sendReactivationEmail(String toEmail, String token) {
         String subject = "Reactivate Your Account";
