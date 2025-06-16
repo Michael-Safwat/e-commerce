@@ -13,7 +13,6 @@ import java.util.ArrayList;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-
 public class ClearCartService {
     private final CartRepository cartRepository;
     private final CartProductRepository cartProductRepository;
@@ -25,7 +24,7 @@ public class ClearCartService {
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Cart not found for user ID: " + userId));
 
-//        cartProductRepository.deleteByCart(cart.getId());
+        cartProductRepository.deleteByCart(cart.getId());
 
         cart.setTotalPrice(0.0);
         cart.setItems(new ArrayList<>());

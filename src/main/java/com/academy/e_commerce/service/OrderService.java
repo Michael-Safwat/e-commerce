@@ -3,9 +3,11 @@ package com.academy.e_commerce.service;
 import com.academy.e_commerce.advice.InsufficientStockException;
 import com.academy.e_commerce.advice.OrderNotFoundException;
 import com.academy.e_commerce.dto.OrderConfirmationRequest;
+import com.academy.e_commerce.dto.OrderResponse;
 import com.academy.e_commerce.dto.OrderDTO;
 import com.academy.e_commerce.mapper.CartToOrderMapper;
 import com.academy.e_commerce.mapper.OrderMapper;
+import com.academy.e_commerce.mapper.OrderToOrderResponseMapper;
 import com.academy.e_commerce.model.*;
 import com.academy.e_commerce.repository.OrderRepository;
 import com.academy.e_commerce.repository.ProductRepository;
@@ -47,18 +49,23 @@ public class OrderService {
             throw new OrderNotFoundException("Order with ID " + orderId + " not found.");
     }
 
-    @Transactional
-    public Order checkoutOrder(Long userId , OrderConfirmationRequest request) {
 
+    public Cart finalizeOrder(Long userId , OrderConfirmationRequest request) {
         Cart cart = this.cartPreviewService.getCartWithItems(userId);
-
         if (cart.getItems().isEmpty()) {
             throw new RuntimeException("Cart is empty, cannot proceed with checkout.");
         }
+        cart.setShippingAddress(request.shippingAddress());
+        return cart;
+    }
+
+    @Transactional
+    public void confirmOrder(Long userId) {
+        Cart cart = this.cartPreviewService.getCartWithItems(userId);
 
         // Validate stock and deduce qty
         for (CartProduct cartProduct : cart.getItems()) {
-            Product product = productRepository.findById(cartProduct.getProduct().getId())
+            Product product = productRepository.findByIdWithLock(cartProduct.getProduct().getId())
                     .orElseThrow(() -> new RuntimeException("Product not found"));
             validateStock(product, cartProduct.getQuantity());
 
@@ -75,14 +82,16 @@ public class OrderService {
         order.setStatus("PENDING");
         order.setUser(this.userService.getUserById(userId));
         order.setCreatedAt(LocalDateTime.now());
-        order.setShippingAddress(request.shippingAddress());
         order.setTotalPrice(cart.getTotalPrice());
+        order.setShippingAddress(cart.getShippingAddress());
         order.setOrderProducts(orderProducts);
 
-        clearCartService.clearCart(cart.getId());
-
-        return this.orderRepository.save(order);
+        clearCartService.clearCart(userId);
+        orderRepository.save(order);
     }
+
+    //todo compare pay amount to cart total price -> throw exception
+
 
     private void validateStock(Product product, int requestedQuantity) {
         if (product.getStock() < requestedQuantity) {

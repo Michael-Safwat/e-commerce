@@ -28,6 +28,4 @@ public class OrderProduct {
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
-    @Column(name = "subPrice", nullable = false)
-    private Double subPrice;
 }

@@ -1,9 +1,9 @@
 package com.academy.e_commerce.controller;
 
 import com.academy.e_commerce.dto.OrderConfirmationRequest;
+import com.academy.e_commerce.dto.OrderResponse;
 import com.academy.e_commerce.dto.OrderDTO;
-import com.academy.e_commerce.dto.cart.CartRequest;
-import com.academy.e_commerce.model.Order;
+import com.academy.e_commerce.model.Cart;
 import com.academy.e_commerce.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -35,9 +35,9 @@ public class OrderController {
         return ResponseEntity.ok(this.orderService.getOrderById(orderId, userId));
     }
 
-    @PostMapping("/checkoutOrder")
+    @PostMapping("/finalizeOrder")
     @PreAuthorize("authentication.principal.claims['userId'] == #userId")
-    public ResponseEntity<Order> checkoutOrder(@PathVariable("userId")Long userId,@RequestBody OrderConfirmationRequest request){
-        return ResponseEntity.ok(this.orderService.checkoutOrder(userId,request));
+    public ResponseEntity<Cart> checkoutOrder(@PathVariable("userId")Long userId, @RequestBody OrderConfirmationRequest request){
+        return ResponseEntity.ok(this.orderService.finalizeOrder(userId,request));
     }
 }

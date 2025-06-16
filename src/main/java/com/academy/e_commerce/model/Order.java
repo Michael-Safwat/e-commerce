@@ -17,7 +17,6 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 public class Order{
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,7 +28,6 @@ public class Order{
     private String status;
     private Double totalPrice;
 
-    @NotBlank
     private String shippingAddress;
 
     private LocalDateTime createdAt;
@@ -37,5 +35,4 @@ public class Order{
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private Set<OrderProduct> orderProducts;
-
 }

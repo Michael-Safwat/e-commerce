@@ -19,10 +19,14 @@ public class CartHelperService {
 
     public void updateCartSubTotal(Cart cart) {
         double subTotal = cartProductRepository.findByCartId(cart.getId())
-                .stream().mapToDouble(CartProduct::getSubPrice).sum();
+                .stream()
+                .mapToDouble(cartProduct -> cartProduct.getQuantity() * cartProduct.getProduct().getPrice())
+                .sum();
+
         cart.setTotalPrice(subTotal);
         cartRepository.save(cart);
     }
+
 
     public void validateStock(Product product, int requestedQuantity) {
         if (product.getStock() < requestedQuantity) {

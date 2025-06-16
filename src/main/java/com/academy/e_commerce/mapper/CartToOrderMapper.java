@@ -14,7 +14,6 @@ public class CartToOrderMapper {
                 .order(order)
                 .product(cartProduct.getProduct())
                 .quantity(cartProduct.getQuantity())
-                .subPrice(cartProduct.getSubPrice())
                 .build();
     }
 }
