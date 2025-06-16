@@ -25,7 +25,7 @@ public class UserRegistrationService {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
 
-    public UserDTO registerUser(UserRegistrationDTO registrationDTO) {
+    public String registerUser(UserRegistrationDTO registrationDTO) {
 
         Optional<User> existingUserOptional = userRepository.findByEmail(registrationDTO.email());
 
@@ -47,12 +47,12 @@ public class UserRegistrationService {
         user.setIsVerified(false);
         userRepository.save(user);
 
-        generateAndSendVerificationToken(user);
 
-        return UserMapper.userToUserDTO(user);
+        return  generateAndSendVerificationToken(user);
+
     }
 
-    private void generateAndSendVerificationToken(User user) {
+    private String generateAndSendVerificationToken(User user) {
         String token = UUID.randomUUID().toString();
 
         VerificationToken verificationToken = new VerificationToken();
@@ -62,7 +62,8 @@ public class UserRegistrationService {
 
         verificationTokenRepository.save(verificationToken);
 
-        emailService.sendVerificationEmail(user.getEmail(), token);
+//        emailService.sendVerificationEmail(user.getEmail(), token);
+        return token;
     }
 
     private void resendVerification(User user) {

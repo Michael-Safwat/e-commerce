@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -38,9 +40,16 @@ public class User {
     @Column(name = "role")
     private Set<Role> roles;
 
+    @Column(nullable = false)
     private Boolean isLocked = false;
+
     @Column(nullable = false)
     private Boolean isVerified = false;
+
+    private String resetToken;
+    private LocalDateTime resetExpiryDate;
+    private Integer failedAttempts = 0;
+
 
     @OneToMany(mappedBy = "user")
     List<Order> orders;

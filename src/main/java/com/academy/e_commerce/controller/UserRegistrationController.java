@@ -17,10 +17,16 @@ public class UserRegistrationController {
         this.userRegistrationService = userRegistrationService;
     }
 
+//    @PostMapping("/register")
+//    public ResponseEntity<UserDTO> register(@RequestBody UserRegistrationDTO dto) {
+//        UserDTO userDTO = userRegistrationService.registerUser(dto);
+//        return ResponseEntity.ok(userDTO);
+//    }
+
     @PostMapping("/register")
-    public ResponseEntity<UserDTO> register(@RequestBody UserRegistrationDTO dto) {
-        UserDTO userDTO = userRegistrationService.registerUser(dto);
-        return ResponseEntity.ok(userDTO);
+    public ResponseEntity<String> register(@RequestBody UserRegistrationDTO dto) {
+        String userVerificationToken = userRegistrationService.registerUser(dto);
+        return ResponseEntity.ok(userVerificationToken);
     }
 
     @GetMapping("/verify")

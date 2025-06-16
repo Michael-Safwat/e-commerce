@@ -36,4 +36,23 @@ public class EmailService {
 
         mailSender.send(message);
     }
+
+    public void sendReactivationEmail(String toEmail, String token) {
+        String subject = "Reactivate Your Account";
+
+        String resetLink = baseUrl + "users/reset-password?token=" + token;
+
+        String body = "Please click the following link to reset your password: " + resetLink;
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(toEmail);
+        message.setSubject(subject);
+        message.setText(body);
+
+        mailSender.send(message);
+    }
+
+
+
+
 }
