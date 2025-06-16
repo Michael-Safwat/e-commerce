@@ -49,6 +49,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
                         .requestMatchers(HttpMethod.GET, this.baseUrl + "/login/**").permitAll()
                         .requestMatchers(HttpMethod.POST, this.baseUrl + "/users/register/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, this.baseUrl + "/webhook").permitAll()
+                        .requestMatchers(HttpMethod.POST, this.baseUrl + "/users/{userId}/pay/{orderId}").hasAuthority(this.ROLE_CUSTOMER)
                         .requestMatchers(HttpMethod.POST, this.baseUrl + "/admins/register/**").hasAnyAuthority(this.ROLE_SUPER_ADMIN)
                         .requestMatchers(HttpMethod.PUT, this.baseUrl + "/admins/**").hasAnyAuthority(this.ROLE_SUPER_ADMIN)
                         .requestMatchers(HttpMethod.DELETE, this.baseUrl + "/admins/**").hasAnyAuthority(this.ROLE_SUPER_ADMIN)
