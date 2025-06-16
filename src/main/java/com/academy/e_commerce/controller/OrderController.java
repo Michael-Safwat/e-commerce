@@ -1,8 +1,11 @@
 package com.academy.e_commerce.controller;
 
+import com.academy.e_commerce.dto.OrderConfirmationRequest;
 import com.academy.e_commerce.dto.OrderDTO;
+import com.academy.e_commerce.dto.cart.CartRequest;
 import com.academy.e_commerce.model.Order;
 import com.academy.e_commerce.service.OrderService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -13,13 +16,10 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("${api.endpoint.base-url}/users/{userId}/orders")
+@RequiredArgsConstructor
 public class OrderController {
 
     private final OrderService orderService;
-
-    public OrderController(OrderService orderService) {
-        this.orderService = orderService;
-    }
 
     @GetMapping()
     @PreAuthorize("authentication.principal.claims['userId'] == #userId")
@@ -37,7 +37,7 @@ public class OrderController {
 
     @PostMapping("/checkoutOrder")
     @PreAuthorize("authentication.principal.claims['userId'] == #userId")
-    public ResponseEntity<Order> checkoutOrder(@PathVariable("userId")Long userId){
-        return ResponseEntity.ok(this.orderService.checkoutOrder(userId));
+    public ResponseEntity<Order> checkoutOrder(@PathVariable("userId")Long userId,@RequestBody OrderConfirmationRequest request){
+        return ResponseEntity.ok(this.orderService.checkoutOrder(userId,request));
     }
 }
