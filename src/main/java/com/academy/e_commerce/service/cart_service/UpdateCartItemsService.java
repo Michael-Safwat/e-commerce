@@ -1,5 +1,7 @@
 package com.academy.e_commerce.service.cart_service;
 
+import com.academy.e_commerce.dto.CartPreview;
+import com.academy.e_commerce.mapper.CartToCartPreviewMapper;
 import com.academy.e_commerce.model.Cart;
 import com.academy.e_commerce.model.CartProduct;
 import com.academy.e_commerce.model.Product;
@@ -11,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import static com.academy.e_commerce.utils.CartHelper.validateStock;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -18,10 +22,9 @@ public class UpdateCartItemsService {
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
     private final CartProductRepository cartProductRepository;
-    private final CartHelperService cartHelperService;
 
     @Transactional
-    public Cart increaseProductQuantityInCart(Long userId, Long productId, Integer quantity) {
+    public CartPreview increaseProductQuantityInCart(Long userId, Long productId, Integer quantity) {
         log.debug("Updating quantity for product {} in cart for user {}", productId, userId);
 
         Cart cart = cartRepository.findByUserId(userId)
@@ -37,20 +40,19 @@ public class UpdateCartItemsService {
 
         Integer newQuantity = quantity + cartProduct.getQuantity();
 
-        cartHelperService.validateStock(product, newQuantity);
+        validateStock(product, newQuantity);
 
         cartProduct.setQuantity(newQuantity);
 
         cartProductRepository.save(cartProduct);
-        cartHelperService.updateCartSubTotal(cart);
 
         cart.setItems(cartProductRepository.findByCart(cart));
 
-        return cart;
+        return CartToCartPreviewMapper.toPreview(cart);
     }
 
     @Transactional
-    public Cart decreaseProductQuantityInCart(Long userId, Long productId, Integer quantity) {
+    public CartPreview decreaseProductQuantityInCart(Long userId, Long productId, Integer quantity) {
         log.debug("Updating quantity for product {} in cart for user {}", productId, userId);
 
         Cart cart = cartRepository.findByUserId(userId)
@@ -72,15 +74,14 @@ public class UpdateCartItemsService {
         cartProduct.setQuantity(newQuantity);
 
         cartProductRepository.save(cartProduct);
-        cartHelperService.updateCartSubTotal(cart);
 
         cart.setItems(cartProductRepository.findByCart(cart));
 
-        return cart;
+        return CartToCartPreviewMapper.toPreview(cart);
     }
 
     @Transactional
-    public Cart setProductQuantity(Long userId, Long productId, Integer quantity) {
+    public CartPreview setProductQuantity(Long userId, Long productId, Integer quantity) {
         log.debug("Setting quantity for product {} in cart for user {}", productId, userId);
 
         Cart cart = cartRepository.findByUserId(userId)
@@ -92,16 +93,14 @@ public class UpdateCartItemsService {
         CartProduct cartProduct = cartProductRepository.findByCartAndProduct(cart, product)
                 .orElseThrow(() -> new RuntimeException("Product not found in cart"));
 
-        cartHelperService.validateStock(product, quantity);
+        validateStock(product, quantity);
 
         cartProduct.setQuantity(quantity);
 
         cartProductRepository.save(cartProduct);
-        cartHelperService.updateCartSubTotal(cart);
-
         cart.setItems(cartProductRepository.findByCart(cart));
 
-        return cart;
+        return CartToCartPreviewMapper.toPreview(cart);
     }
 
 

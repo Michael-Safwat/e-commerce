@@ -1,14 +1,12 @@
 package com.academy.e_commerce.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name = "orders")
 @Getter
@@ -34,5 +32,5 @@ public class Order{
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private Set<OrderProduct> orderProducts;
+    private List<OrderProduct> orderProducts = new ArrayList<>();
 }

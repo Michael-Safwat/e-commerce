@@ -1,5 +1,7 @@
 package com.academy.e_commerce.service.cart_service;
 
+import com.academy.e_commerce.dto.CartPreview;
+import com.academy.e_commerce.mapper.CartToCartPreviewMapper;
 import com.academy.e_commerce.model.Cart;
 import com.academy.e_commerce.repository.CartProductRepository;
 import com.academy.e_commerce.repository.CartRepository;
@@ -18,7 +20,7 @@ public class CartPreviewService {
     private final CartProductRepository cartProductRepository;
 
     @Transactional
-    public Cart getCartWithItems(Long userId) {
+    public CartPreview getCartWithItems(Long userId) {
         log.debug("Fetching cart for user {}", userId);
 
         Cart cart = cartRepository.findByUserId(userId)
@@ -26,7 +28,8 @@ public class CartPreviewService {
 
         cart.setItems(cartProductRepository.findByCart(cart));
 
-        return cart;
+        return CartToCartPreviewMapper.toPreview(cart);
     }
+
 
 }
