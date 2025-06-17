@@ -1,9 +1,9 @@
 package com.academy.e_commerce.controller;
 
 import com.academy.e_commerce.config.security.jwt.Token;
+import com.academy.e_commerce.model.Password;
 import com.academy.e_commerce.service.AuthService;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.weaver.patterns.IToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -33,7 +33,7 @@ public class AuthController {
     }
 
     @PatchMapping("/reset-password")
-    public ResponseEntity<String> resetPassword(@RequestParam String token, @RequestBody String newPassword) {
+    public ResponseEntity<String> resetPassword(@RequestParam String token, @RequestBody Password newPassword) {
         authService.resetPassword(token, newPassword);
         return ResponseEntity.ok("Password reset successful");
     }

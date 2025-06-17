@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import java.util.Set;
 
 @Component
-public class AdminInitializer implements CommandLineRunner {
+public class DBInitializer implements CommandLineRunner {
 
     @Value("${admin.name}")
     private String adminName;
@@ -26,7 +26,7 @@ public class AdminInitializer implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
 
 
-    public AdminInitializer(UserRepository userRepository,PasswordEncoder passwordEncoder) {
+    public DBInitializer(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -44,8 +44,6 @@ public class AdminInitializer implements CommandLineRunner {
                 .failedAttempts(0)
                 .build();
 
-
-        admin.setPassword(passwordEncoder.encode(admin.getPassword()));
 
         this.userRepository.save(admin);
     }

@@ -14,15 +14,10 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
 
-    /**
-     * Base path for your API endpoints, e.g. "/api/auth"
-     */
+
     @Value("${api.endpoint.base-url}")
     private String baseUrl;
 
-    /**
-     * Sends an HTML email with a “Verify Account” button.
-     */
     public void sendVerificationEmail(String toEmail, String name, String token) {
         String subject = "Verify Your Email";
         String verifyLink = "http://localhost:8080" + baseUrl + "/users/verify?token=" + token;
@@ -53,9 +48,7 @@ public class EmailService {
         sendHtmlEmail(toEmail, subject, html);
     }
 
-    /**
-     * Sends an HTML email with a “Reset Password” button.
-     */
+
     public void sendReactivationEmail(String toEmail, String name, String token) {
         String subject = "Reset Your Password";
         String resetLink = "http://localhost:8080" + baseUrl + "/reset-password?token=" + token;
@@ -86,9 +79,7 @@ public class EmailService {
         sendHtmlEmail(toEmail, subject, html);
     }
 
-    /**
-     * Internal helper to send an HTML email.
-     */
+
     private void sendHtmlEmail(String to, String subject, String htmlContent) {
         try {
             MimeMessage mime = mailSender.createMimeMessage();

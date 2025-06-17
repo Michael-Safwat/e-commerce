@@ -2,6 +2,7 @@ package com.academy.e_commerce.service;
 
 import com.academy.e_commerce.config.security.jwt.JwtProvider;
 import com.academy.e_commerce.config.security.jwt.Token;
+import com.academy.e_commerce.model.Password;
 import com.academy.e_commerce.model.User;
 import com.academy.e_commerce.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -38,6 +39,7 @@ public class AuthService {
        return new Token(this.jwtProvider.createToken(authentication));
     }
 
+    @Transactional
     public String sendReactivationLink(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
@@ -56,7 +58,8 @@ public class AuthService {
         return token;
     }
 
-    public void resetPassword(String token, String newPassword) {
+    @Transactional
+    public void resetPassword(String token, Password password) {
         User user = userRepository.findByResetToken(token)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid token"));
 
@@ -64,7 +67,7 @@ public class AuthService {
             throw new IllegalArgumentException("Token expired");
         }
 
-        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setPassword(passwordEncoder.encode(password.getNewPassword()));
         user.setIsLocked(false);
         user.setFailedAttempts(0);
         user.setResetToken(null);
