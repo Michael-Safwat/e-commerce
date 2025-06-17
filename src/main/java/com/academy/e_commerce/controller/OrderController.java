@@ -47,8 +47,8 @@ public class OrderController {
 //    public void checkoutOrder2(@PathVariable("userId")Long userId){
 //        this.orderService.confirmOrder(userId);
 //    }
-
-    //testing
+//
+////    testing
 //    @PostMapping("/testremove/{orderId}")
 //    public void remove(@PathVariable("orderId")Long id){
 //        this.orderService.removeOrder(id);

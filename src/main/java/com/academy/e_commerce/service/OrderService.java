@@ -16,7 +16,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -38,7 +40,13 @@ public class OrderService {
 
 
     public Page<OrderDTO> getAllOrdersByCustomerId(Long customerId, Pageable pageable) {
-        Page<Order> orders = this.orderRepository.findAllByUser_Id(customerId, pageable);
+        Pageable sortedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                Sort.by(Sort.Direction.DESC, "createdAt")
+        );
+
+        Page<Order> orders = this.orderRepository.findAllByUser_Id(customerId, sortedPageable);
         return orders.map(OrderMapper::toDTO);
     }
 
