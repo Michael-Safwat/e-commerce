@@ -5,6 +5,7 @@ import com.academy.e_commerce.config.security.jwt.Token;
 import com.academy.e_commerce.model.User;
 import com.academy.e_commerce.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-
+@Slf4j
 @Service
 public class AuthService {
 
@@ -33,7 +34,8 @@ public class AuthService {
     }
 
     public Token createJwtToken(Authentication authentication) {
-        return new Token(this.jwtProvider.createToken(authentication));
+        log.info("Creating JWT token for user: {}", authentication.getName());
+       return new Token(this.jwtProvider.createToken(authentication));
     }
 
     @Transactional
@@ -45,12 +47,12 @@ public class AuthService {
             throw new IllegalStateException("Account is not locked.");
         }
 
-        String token = UUID.randomUUID().toString();
+
         user.setResetToken(token);
-        user.setResetExpiryDate(LocalDateTime.now().plusHours(1));
+        user.setResetExpiryDate(LocalDateTime.now().plusHours(2));
         userRepository.save(user);
 
-        emailService.sendReactivationEmail(email, token);
+        emailService.sendReactivationEmail(email, user.getName(), user.getResetToken()  );
         return token;
     }
 

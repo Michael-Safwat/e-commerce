@@ -48,6 +48,8 @@ public class User {
 
     private String resetToken;
     private LocalDateTime resetExpiryDate;
+
+    @Builder.Default
     private Integer failedAttempts = 0;
 
 

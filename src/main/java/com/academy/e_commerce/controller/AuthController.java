@@ -25,14 +25,15 @@ public class AuthController {
     public ResponseEntity<Token> getLoginInfo(Authentication authentication) {
         return new ResponseEntity<>(this.authService.createJwtToken(authentication), HttpStatus.OK);
     }
+
     @PostMapping("/reactivate")
     public ResponseEntity<String> reactivate(@RequestParam String email) {
         String reactivationToken = authService.sendReactivationLink(email);
         return ResponseEntity.ok("Reactivation link sent"+ reactivationToken);
     }
 
-    @PostMapping("/reset-password")
-    public ResponseEntity<String> resetPassword(@PathVariable String token, @RequestBody String newPassword) {
+    @PatchMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestParam String token, @RequestBody String newPassword) {
         authService.resetPassword(token, newPassword);
         return ResponseEntity.ok("Password reset successful");
     }

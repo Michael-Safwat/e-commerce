@@ -21,6 +21,30 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class ExceptionHandlerAdvice {
 
+    @ExceptionHandler(RegistrationException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<String> handleRegistrationError(RegistrationException ex) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body("Registration error: " + ex.getMessage());
+    }
+
+    @ExceptionHandler(VerificationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<String> handleVerificationError(VerificationException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body("Verification error: " + ex.getMessage());
+    }
+
+    @ExceptionHandler(PasswordResetException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<String> handlePasswordResetError(PasswordResetException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body("Password reset error: " + ex.getMessage());
+    }
+
     @ExceptionHandler({UsernameNotFoundException.class, BadCredentialsException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     ResponseEntity<String> handleAuthenticationException(Exception ex) {
