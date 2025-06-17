@@ -1,5 +1,7 @@
 package com.academy.e_commerce.service.cart_service;
 
+import com.academy.e_commerce.dto.CartPreview;
+import com.academy.e_commerce.mapper.CartToCartPreviewMapper;
 import com.academy.e_commerce.model.*;
 import com.academy.e_commerce.repository.CartProductRepository;
 import com.academy.e_commerce.repository.CartRepository;
@@ -12,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 
+import static com.academy.e_commerce.utils.CartHelper.validateStock;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -20,10 +24,9 @@ public class AddProductToCartService {
     private final ProductRepository productRepository;
     private final CartProductRepository cartProductRepository;
     private final UserRepository userRepository;
-    private final CartHelperService cartHelperService;
 
     @Transactional
-    public Cart addNewProductToCart(Long userId, Long productId, Integer quantity) {
+    public CartPreview addNewProductToCart(Long userId, Long productId, Integer quantity) {
         log.debug("Adding new product {} to cart for user {}", productId, userId);
 
         Cart cart = cartRepository.findByUserId(userId).orElse(null);
@@ -34,7 +37,6 @@ public class AddProductToCartService {
 
             cart = Cart.builder()
                     .user(user)
-                    .totalPrice(0.0)
                     .items(new ArrayList<>())
                     .build();
 
@@ -50,7 +52,7 @@ public class AddProductToCartService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        cartHelperService.validateStock(product, quantity);
+        validateStock(product, quantity);
 
         CartProduct cartProduct = CartProduct.builder()
                 .cart(cart)
@@ -59,11 +61,11 @@ public class AddProductToCartService {
                 .build();
 
         cartProductRepository.save(cartProduct);
-        cartHelperService.updateCartSubTotal(cart);
 
         cart.setItems(cartProductRepository.findByCart(cart));
 
-        return cart;
+        return CartToCartPreviewMapper.toPreview(cart);
     }
+
 
 }

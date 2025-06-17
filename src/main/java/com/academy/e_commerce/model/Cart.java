@@ -29,8 +29,8 @@ public class Cart {
     @JsonManagedReference
     private List<CartProduct> items = new ArrayList<>();
 
-    @Column(name = "totalPrice", nullable = false)
-    private Double totalPrice;
+//    @Column(name = "totalPrice", nullable = false)
+//    private Double totalPrice;
 
     private String shippingAddress;
 }

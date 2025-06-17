@@ -26,7 +26,6 @@ public class ClearCartService {
 
         cartProductRepository.deleteByCart(cart.getId());
 
-        cart.setTotalPrice(0.0);
         cart.setItems(new ArrayList<>());
         cartRepository.save(cart);
     }

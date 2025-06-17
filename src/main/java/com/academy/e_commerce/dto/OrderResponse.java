@@ -3,6 +3,7 @@ package com.academy.e_commerce.dto;
 import com.academy.e_commerce.model.OrderProduct;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 public record OrderResponse(
@@ -12,5 +13,5 @@ public record OrderResponse(
         Double totalPrice,
         String shippingAddress,
         LocalDateTime createdAt,
-        Set<OrderProduct> orderProducts
+        List<OrderProduct> orderProducts
 ){}
