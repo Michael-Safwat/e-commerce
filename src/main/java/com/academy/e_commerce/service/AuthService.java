@@ -38,7 +38,6 @@ public class AuthService {
        return new Token(this.jwtProvider.createToken(authentication));
     }
 
-    @Transactional
     public String sendReactivationLink(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
@@ -57,7 +56,6 @@ public class AuthService {
         return token;
     }
 
-    @Transactional
     public void resetPassword(String token, String newPassword) {
         User user = userRepository.findByResetToken(token)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid token"));

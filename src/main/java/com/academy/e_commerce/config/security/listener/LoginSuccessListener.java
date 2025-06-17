@@ -27,7 +27,7 @@ public class LoginSuccessListener implements ApplicationListener<AuthenticationS
             if (userOpt.isPresent()) {
                 User user = userOpt.get();
                 boolean userIsLocked = user.getIsLocked();
-                if (!userIsLocked) {
+                if (!userIsLocked && user.getRoles().contains("ROLE_CUSTOMER")) {
                     user.setFailedAttempts(0);
                     userRepository.save(user);
                 }
