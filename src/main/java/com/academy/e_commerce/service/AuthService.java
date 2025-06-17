@@ -47,7 +47,7 @@ public class AuthService {
             throw new IllegalStateException("Account is not locked.");
         }
 
-
+        String token = UUID.randomUUID().toString();
         user.setResetToken(token);
         user.setResetExpiryDate(LocalDateTime.now().plusHours(2));
         userRepository.save(user);
