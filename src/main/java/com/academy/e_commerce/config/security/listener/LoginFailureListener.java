@@ -25,7 +25,6 @@ public class LoginFailureListener implements ApplicationListener<AuthenticationF
     private final UserRegistrationService  userRegistrationService;
 
     @Override
-    @Transactional
     public void onApplicationEvent(AuthenticationFailureBadCredentialsEvent event) {
         String email = (String) event.getAuthentication().getPrincipal();
         Optional<User> userOpt = userRepository.findByEmail(email);
@@ -35,12 +34,13 @@ public class LoginFailureListener implements ApplicationListener<AuthenticationF
             if (Boolean.TRUE.equals(user.getIsVerified())) {
                 int failed = user.getFailedAttempts() + 1;
                 user.setFailedAttempts(failed);
-                if (failed >= 3) {
+                if (failed > 3) {
                     user.setIsLocked(true);
+                    userRepository.save(user);
                     authService.sendReactivationLink(email);
                     throw new LockedException("User is suspended check your mail to active your account.");
                 }
-                userRepository.save(user);
+
             }
             else {
                 userRegistrationService.resendVerification(user);

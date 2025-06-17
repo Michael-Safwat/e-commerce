@@ -43,7 +43,8 @@ public class AuthService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        if (!user.getIsLocked()) {
+        boolean isLocked = user.getIsLocked();
+        if (!isLocked) {
             throw new IllegalStateException("Account is not locked.");
         }
 
@@ -52,7 +53,7 @@ public class AuthService {
         user.setResetExpiryDate(LocalDateTime.now().plusHours(2));
         userRepository.save(user);
 
-        emailService.sendReactivationEmail(email, user.getName(), user.getResetToken()  );
+        emailService.sendReactivationEmail(email, user.getName(), user.getResetToken());
         return token;
     }
 
