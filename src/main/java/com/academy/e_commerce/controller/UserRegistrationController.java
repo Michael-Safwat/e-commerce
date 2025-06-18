@@ -19,8 +19,8 @@ public class UserRegistrationController {
 
     @PostMapping("/register")
     public ResponseEntity<UserDTO> register(@RequestBody UserRegistrationDTO dto) {
-        UserDTO userDTO = userRegistrationService.registerUser(dto);
-        return ResponseEntity.ok(userDTO);
+        UserDTO user = userRegistrationService.registerUser(dto);
+        return ResponseEntity.ok(user);
     }
 
     @GetMapping("/verify")

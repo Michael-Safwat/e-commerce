@@ -5,6 +5,7 @@ import com.academy.e_commerce.model.Role;
 import com.academy.e_commerce.model.User;
 import com.academy.e_commerce.repository.ProductRepository;
 import com.academy.e_commerce.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -12,14 +13,23 @@ import org.springframework.stereotype.Component;
 import java.util.Set;
 
 @Component
-public class AdminInitializer implements CommandLineRunner {
+public class DBInitializer implements CommandLineRunner {
+
+    @Value("${admin.name}")
+    private String adminName;
+
+    @Value("${admin.email}")
+    private String adminEmail;
+
+    @Value("${admin.password}")
+    private String adminPlainPassword;
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ProductRepository productRepository;
 
 
-    public AdminInitializer(UserRepository userRepository, PasswordEncoder passwordEncoder, ProductRepository productRepository) {
+    public DBInitializer(UserRepository userRepository, PasswordEncoder passwordEncoder,ProductRepository productRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.productRepository = productRepository;
@@ -29,15 +39,15 @@ public class AdminInitializer implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         User admin = User.builder()
-                .name("Michael")
-                .email("mike@example.com")
-                .password("123")
+                .name(adminName)
+                .email(adminEmail)
+                .password(passwordEncoder.encode(adminPlainPassword))
                 .roles(Set.of(Role.SUPER_ADMIN))
                 .isVerified(true)
                 .isLocked(false)
+                .failedAttempts(0)
                 .build();
 
-        admin.setPassword(passwordEncoder.encode(admin.getPassword()));
 
         this.userRepository.save(admin);
 

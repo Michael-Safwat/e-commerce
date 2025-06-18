@@ -22,7 +22,6 @@ public class JwtProvider {
     }
 
     public String createToken(Authentication authentication) {
-
         Instant now = Instant.now();
         long expiresIn = 2; // 2hours
 
