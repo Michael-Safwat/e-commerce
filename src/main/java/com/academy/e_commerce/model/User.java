@@ -9,6 +9,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
@@ -19,7 +21,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class User{
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,9 +44,18 @@ public class User{
     @Column(name = "role")
     private Set<Role> roles;
 
+    @Column(nullable = false)
     private Boolean isLocked = false;
+
     @Column(nullable = false)
     private Boolean isVerified = false;
+
+    private String resetToken;
+    private LocalDateTime resetExpiryDate;
+
+    @Builder.Default
+    private Integer failedAttempts = 0;
+
 
     @OneToMany(mappedBy = "user")
     @JsonIgnore

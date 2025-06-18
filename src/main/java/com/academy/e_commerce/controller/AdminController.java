@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("${api.endpoint.base-url}/admins")
+@RequestMapping("${api.endpoint.base-url}/portal")
 public class AdminController {
     private final AdminService adminService;
 

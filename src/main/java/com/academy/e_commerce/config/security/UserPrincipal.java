@@ -1,6 +1,7 @@
 package com.academy.e_commerce.config.security;
 
 import com.academy.e_commerce.model.User;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -43,6 +44,9 @@ public record UserPrincipal(User user) implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return user.getIsVerified();
+        if (!user.getIsVerified()) {
+            throw new DisabledException("User email is not verified");
+        }
+        return true;
     }
 }
