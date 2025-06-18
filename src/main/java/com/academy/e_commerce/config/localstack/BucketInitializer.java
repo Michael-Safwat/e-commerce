@@ -24,9 +24,9 @@ public class BucketInitializer implements CommandLineRunner {
     public void run(String... args) {
         if (!s3Client.doesBucketExistV2(bucketName)) {
             s3Client.createBucket(bucketName);
-            log.info("✅ Created bucket: {}", bucketName);
+            log.info("Created bucket: {}", bucketName);
         } else {
-            log.info("✅ Bucket already exists: {}", bucketName);
+            log.info("Bucket already exists: {}", bucketName);
         }
     }
 }
