@@ -4,12 +4,14 @@ import com.academy.e_commerce.model.OrderProduct;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
-public record OrderDTO(
+public record OrderResponse(
         Long id,
+        Long userId,
         String status,
         Double totalPrice,
         String shippingAddress,
-        List<OrderProduct> items,
-        LocalDateTime createdAt
-) {}
+        LocalDateTime createdAt,
+        List<OrderProduct> orderProducts
+){}

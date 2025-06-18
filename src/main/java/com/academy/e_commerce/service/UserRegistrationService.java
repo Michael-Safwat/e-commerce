@@ -20,8 +20,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+
 @Slf4j
 @Service
+
 @RequiredArgsConstructor
 public class UserRegistrationService {
 
@@ -56,11 +58,11 @@ public class UserRegistrationService {
         user.setIsLocked(false);
         user.setRoles(Set.of(Role.CUSTOMER));
         user.setIsVerified(false);
-
         userRepository.save(user);
         log.info("Created new user with id {} and email {}", user.getId(), user.getEmail());
 
         generateAndSendVerificationToken(user);
+
         return UserMapper.userToUserDTO(user);
     }
 
@@ -69,6 +71,7 @@ public class UserRegistrationService {
         verificationTokenRepository.findByUser(user).ifPresent(verificationTokenRepository::delete);
 
         String token = UUID.randomUUID().toString();
+
         VerificationToken verificationToken = new VerificationToken();
         verificationToken.setToken(token);
         verificationToken.setUser(user);

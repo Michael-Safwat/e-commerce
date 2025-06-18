@@ -7,13 +7,13 @@ public class OrderMapper {
 
     private OrderMapper(){}
 
-    public static OrderDTO orderToOrderDTO(Order order){
+    public static OrderDTO toDTO(Order order) {
         return new OrderDTO(
                 order.getId(),
                 order.getStatus(),
                 order.getTotalPrice(),
                 order.getShippingAddress(),
-                order.getPaymentMethod(),
+                order.getOrderProducts(),
                 order.getCreatedAt()
         );
     }

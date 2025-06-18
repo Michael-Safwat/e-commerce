@@ -12,6 +12,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableMethodSecurity
@@ -52,27 +58,45 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.PATCH, this.baseUrl + "/reset-password/**").permitAll()
                         .requestMatchers(HttpMethod.POST, this.baseUrl + "/users/register/**").permitAll()
                         .requestMatchers(HttpMethod.GET, this.baseUrl + "/users/verify/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, this.baseUrl + "/webhook").permitAll()
+                        .requestMatchers(HttpMethod.POST, this.baseUrl + "/users/{userId}/pay/{orderId}").hasAuthority(this.ROLE_CUSTOMER)
                         .requestMatchers(HttpMethod.POST, this.baseUrl + "/admins/register/**").hasAnyAuthority(this.ROLE_SUPER_ADMIN)
                         .requestMatchers(HttpMethod.PUT, this.baseUrl + "/admins/**").hasAnyAuthority(this.ROLE_SUPER_ADMIN)
                         .requestMatchers(HttpMethod.DELETE, this.baseUrl + "/admins/**").hasAnyAuthority(this.ROLE_SUPER_ADMIN)
-                        .requestMatchers(HttpMethod.POST, this.baseUrl + "/orders/{orderId}").hasAnyAuthority(this.ROLE_SUPER_ADMIN, this.ROLE_ADMIN, this.ROLE_CUSTOMER)
                         .requestMatchers(HttpMethod.GET, this.baseUrl + "/products/**").hasAnyAuthority(this.ROLE_SUPER_ADMIN, this.ROLE_ADMIN, this.ROLE_CUSTOMER)
                         .requestMatchers(HttpMethod.POST, this.baseUrl + "/portal/products/**").hasAnyAuthority(this.ROLE_SUPER_ADMIN, this.ROLE_ADMIN)
                         .requestMatchers(HttpMethod.PUT, this.baseUrl + "/portal/products/**").hasAnyAuthority(this.ROLE_SUPER_ADMIN, this.ROLE_ADMIN)
                         .requestMatchers(HttpMethod.DELETE, this.baseUrl + "/portal/products/**").hasAnyAuthority(this.ROLE_SUPER_ADMIN, this.ROLE_ADMIN)
-                        .requestMatchers(HttpMethod.POST, this.baseUrl + CART_BASE_PATH).hasAnyAuthority(this.ROLE_CUSTOMER)
-                        .requestMatchers(HttpMethod.DELETE, this.baseUrl + CART_BASE_PATH).hasAnyAuthority(this.ROLE_CUSTOMER)
-                        .requestMatchers(HttpMethod.GET, this.baseUrl + CART_BASE_PATH).hasAnyAuthority(this.ROLE_CUSTOMER)
+//                        .requestMatchers(HttpMethod.POST, this.baseUrl + "/orders/{orderId}").hasAnyAuthority(this.ROLE_SUPER_ADMIN, this.ROLE_ADMIN, this.ROLE_CUSTOMER)
+                        .requestMatchers(HttpMethod.GET, this.baseUrl + "/orders/**").hasAnyAuthority(this.ROLE_SUPER_ADMIN, this.ROLE_ADMIN, this.ROLE_CUSTOMER)
+                        .requestMatchers(HttpMethod.POST, this.baseUrl + "/orders/users/{userId}/finalizeOrder").hasAnyAuthority(this.ROLE_CUSTOMER)
+                        .requestMatchers(HttpMethod.POST, this.baseUrl + CART_BASE_PATH).hasAuthority(this.ROLE_CUSTOMER)
+                        .requestMatchers(HttpMethod.GET, this.baseUrl + CART_BASE_PATH).hasAuthority(this.ROLE_CUSTOMER)
+                        .requestMatchers(HttpMethod.PATCH, this.baseUrl + CART_BASE_PATH +"/**").hasAuthority(this.ROLE_CUSTOMER)
 
                         // Disallow anything else.
                         .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .build();
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(12);
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:4200"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Cache-Control", "X-Requested-With", "Accept"));
+        configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }
