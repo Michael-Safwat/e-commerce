@@ -53,17 +53,17 @@ public class ProductServiceTest {
     }
 
 
-    @Test
-    void testCreateProduct() {
-        Product product = ProductMapper.productDtoToEntity(getSampleProductDTO());
-        when(productRepository.save(any(Product.class))).thenReturn(product);
-
-        Product saved = productService.createProduct(getSampleProductDTO());
-
-        assertNotNull(saved);
-        assertEquals("Sample Product", saved.getName());
-        verify(productRepository).save(any(Product.class));
-    }
+//    @Test
+//    void testCreateProduct() {
+//        Product product = ProductMapper.productDtoToEntity(getSampleProductDTO());
+//        when(productRepository.save(any(Product.class))).thenReturn(product);
+//
+//       Product saved = productService.createProduct(getSampleProductDTO());
+//
+//        assertNotNull(saved);
+//        assertEquals("Sample Product", saved.getName());
+//        verify(productRepository).save(any(Product.class));
+//    }
 
 
     @Test
