@@ -43,7 +43,7 @@ public class ProductService {
             } else {
                 products = productRepository.findAll(pageable);
             }
-            return products; // Returns Product instead of mapping to DTO
+            return products;
         }
 
         public Page<Product> getAllProducts(Pageable pageable) {
@@ -61,7 +61,7 @@ public class ProductService {
             log.info("Updating product ID: {}", id);
             return productRepository.findById(id).map(product -> {
                 Product updatedProduct = ProductMapper.productDtoToEntity(updatedProductDTO);
-                updatedProduct.setId(product.getId()); // Preserve ID
+                updatedProduct.setId(product.getId());
                 return productRepository.save(updatedProduct);
             }).orElseThrow(() -> new RuntimeException("Product not found"));
         }
