@@ -1,5 +1,6 @@
 package com.academy.e_commerce.service;
 
+import com.academy.e_commerce.advice.ImageUploadException;
 import com.academy.e_commerce.dto.ProductDTO;
 import com.academy.e_commerce.mapper.ProductMapper;
 import com.academy.e_commerce.model.Product;
@@ -47,7 +48,7 @@ public class ProductService {
 
                 product.setImage(imageUrl);
             } catch (IOException e) {
-                throw new RuntimeException("Failed to upload image to S3", e);
+                throw new ImageUploadException("Failed to upload image to S3", e);
             }
         }
 
