@@ -1,16 +1,22 @@
 package com.academy.e_commerce.service;
 
+import com.academy.e_commerce.advice.ImageUploadException;
 import com.academy.e_commerce.dto.ProductDTO;
 import com.academy.e_commerce.mapper.ProductMapper;
 import com.academy.e_commerce.model.Product;
 import com.academy.e_commerce.repository.ProductRepository;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,13 +27,36 @@ import java.util.stream.Collectors;
 public class ProductService {
     private final ProductRepository productRepository;
 
-        public Product createProduct(ProductDTO productDTO) {
-            log.info("Creating new product: {}", productDTO.name());
-            Product product = ProductMapper.productDtoToEntity(productDTO);
-            return productRepository.save(product);
+    private final AmazonS3 s3Client;
+
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucketName;
+
+    public Product createProduct(ProductDTO productDTO, MultipartFile imageFile) {
+        log.info("Creating new product: {}", productDTO.name());
+        Product product = ProductMapper.productDtoToEntity(productDTO);
+
+        if (imageFile != null && !imageFile.isEmpty()) {
+            try {
+                String key = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
+                ObjectMetadata metadata = new ObjectMetadata();
+                metadata.setContentLength(imageFile.getSize());
+                metadata.setContentType(imageFile.getContentType());
+
+                s3Client.putObject(bucketName, key, imageFile.getInputStream(), metadata);
+                String imageUrl = s3Client.getUrl(bucketName, key).toString();
+
+                product.setImage(imageUrl);
+            } catch (IOException e) {
+                throw new ImageUploadException("Failed to upload image to S3", e);
+            }
         }
 
-        public Page<Product> getAllProductsFiltered(String category, String name, Pageable pageable) {
+        return productRepository.save(product);
+    }
+
+
+    public Page<Product> getAllProductsFiltered(String category, String name, Pageable pageable) {
             log.info("Fetching products with filters: category={}, name={}", category, name);
 
             Page<Product> products;
