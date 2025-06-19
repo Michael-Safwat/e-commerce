@@ -16,6 +16,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query(value = "SELECT * FROM products WHERE id = :productId FOR UPDATE", nativeQuery = true)
     Optional<Product> findByIdWithLock(@Param("productId") Long productId);
 
+    @Lock(LockModeType.PESSIMISTIC_READ)
+    Optional<Product> findWithSharedLockById(Long id);
 
     /**
      * Finds products by category and name (case-insensitive for both).
