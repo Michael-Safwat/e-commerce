@@ -8,7 +8,9 @@ import com.academy.e_commerce.model.Cart;
 import com.academy.e_commerce.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,7 +29,12 @@ public class OrderController {
     public ResponseEntity<Page<OrderDTO>> getAllOrdersByCustomerId(
             @PathVariable("userId") Long userId,
             @PageableDefault(size = 10, page = 0) Pageable pageable){
-        return ResponseEntity.ok(this.orderService.getAllOrdersByCustomerId(userId, pageable));
+        Pageable sortedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                Sort.by(Sort.Direction.DESC, "createdAt")
+        );
+        return ResponseEntity.ok(this.orderService.getAllOrdersByCustomerId(userId, sortedPageable));
     }
 
     @GetMapping("/{orderId}")

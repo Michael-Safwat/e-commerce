@@ -1,5 +1,6 @@
 package com.academy.e_commerce.service;
 
+import com.academy.e_commerce.advice.BusinessException;
 import com.academy.e_commerce.advice.OrderNotFoundException;
 import com.academy.e_commerce.dto.CartConfirmation;
 import com.academy.e_commerce.dto.OrderConfirmationRequest;
@@ -40,31 +41,26 @@ public class OrderService {
 
 
     public Page<OrderDTO> getAllOrdersByCustomerId(Long customerId, Pageable pageable) {
-        Pageable sortedPageable = PageRequest.of(
-                pageable.getPageNumber(),
-                pageable.getPageSize(),
-                Sort.by(Sort.Direction.DESC, "createdAt")
-        );
-
-        Page<Order> orders = this.orderRepository.findAllByUser_Id(customerId, sortedPageable);
+        Page<Order> orders = this.orderRepository.findAllByUser_Id(customerId, pageable);
         return orders.map(OrderMapper::toDTO);
     }
 
     public OrderDTO getOrderById(Long orderId, Long customerId) {
         Optional<Order> order = this.orderRepository.findByIdAndUser_Id(orderId, customerId);
 
-        if(order.isPresent())
-            return OrderMapper.toDTO(order.get());
-        else
-            throw new OrderNotFoundException("Order with ID " + orderId + " not found.");
+        if(order.isEmpty())
+            throw new BusinessException("Order with ID " + orderId + " not found.");
+
+        return OrderMapper.toDTO(order.get());
+
     }
 
 
     public CartConfirmation finalizeOrder(Long userId , OrderConfirmationRequest request) {
         Cart cart = cartRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Cart not found for user ID: " + userId));
+                .orElseThrow(() -> new BusinessException("Cart not found for user ID: " + userId));
         if (cart.getItems().isEmpty()) {
-            throw new RuntimeException("Cart is empty, cannot proceed with checkout.");
+            throw new BusinessException("Cart is empty, cannot proceed with checkout.");
         }
         cart.setShippingAddress(request.shippingAddress());
         cartRepository.save(cart);
@@ -73,13 +69,12 @@ public class OrderService {
 
     @Transactional
     public void confirmOrder(Long userId) {
-        Cart cart = cartRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Cart not found for user ID: " + userId));
+        Cart cart = cartRepository.findWithWriteLockByUserId(userId)
+                .orElseThrow(() -> new BusinessException("Cart not found for user ID: " + userId));
 
-        // Validate stock and deduce qty
         for (CartProduct cartProduct : cart.getItems()) {
             Product product = productRepository.findByIdWithLock(cartProduct.getProduct().getId())
-                    .orElseThrow(() -> new RuntimeException("Product not found"));
+                    .orElseThrow(() -> new BusinessException("Product not found"));
             validateStock(product, cartProduct.getQuantity());
 
             product.setStock(product.getStock() - cartProduct.getQuantity());
@@ -108,11 +103,11 @@ public class OrderService {
         log.debug("Rolling back products of order {}", orderId);
 
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new BusinessException("Order not found"));
 
         for (OrderProduct orderProduct : order.getOrderProducts()) {
             Product product = productRepository.findByIdWithLock(orderProduct.getProduct().getId())
-                    .orElseThrow(() -> new RuntimeException("Product not found"));
+                    .orElseThrow(() -> new BusinessException("Product not found"));
 
             product.setStock(product.getStock() + orderProduct.getQuantity());
             productRepository.save(product);
