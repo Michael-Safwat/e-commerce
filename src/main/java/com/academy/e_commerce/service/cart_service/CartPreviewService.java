@@ -1,5 +1,6 @@
 package com.academy.e_commerce.service.cart_service;
 
+import com.academy.e_commerce.advice.BusinessException;
 import com.academy.e_commerce.dto.CartPreview;
 import com.academy.e_commerce.mapper.CartToCartPreviewMapper;
 import com.academy.e_commerce.model.Cart;
@@ -17,16 +18,12 @@ import org.springframework.stereotype.Service;
 public class CartPreviewService {
 
     private final CartRepository cartRepository;
-    private final CartProductRepository cartProductRepository;
 
-    @Transactional
     public CartPreview getCartWithItems(Long userId) {
         log.debug("Fetching cart for user {}", userId);
 
         Cart cart = cartRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Cart not found for user ID: " + userId));
-
-        cart.setItems(cartProductRepository.findByCart(cart));
+                .orElseThrow(() -> new BusinessException("Your cart is empty"));
 
         return CartToCartPreviewMapper.toPreview(cart);
     }

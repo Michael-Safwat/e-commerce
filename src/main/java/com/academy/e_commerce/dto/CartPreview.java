@@ -7,7 +7,7 @@ import java.util.List;
 public record CartPreview(
         Long id,
         Long userId,
-        List<CartProduct> items,
+        List<CartProductPreview> items,
         Double totalPrice
 ) {}
 
