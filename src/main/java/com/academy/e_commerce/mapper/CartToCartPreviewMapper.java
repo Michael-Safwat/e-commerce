@@ -14,7 +14,9 @@ public class CartToCartPreviewMapper {
         return new CartPreview(
                 cart.getId(),
                 cart.getUser() != null ? cart.getUser().getId() : null,
-                cart.getItems(),
+                cart.getItems().stream()
+                        .map(CartProductMapper::toPreview)
+                        .toList(),
                 calculateTotalPrice(cart.getItems())
         );
     }

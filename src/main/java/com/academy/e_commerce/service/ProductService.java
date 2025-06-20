@@ -1,10 +1,12 @@
 package com.academy.e_commerce.service;
 
+import com.academy.e_commerce.advice.BusinessException;
 import com.academy.e_commerce.advice.ImageUploadException;
 import com.academy.e_commerce.dto.ProductDTO;
 import com.academy.e_commerce.mapper.ProductMapper;
 import com.academy.e_commerce.model.Product;
 import com.academy.e_commerce.repository.ProductRepository;
+import jakarta.transaction.Transactional;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -72,27 +73,31 @@ public class ProductService {
             } else {
                 products = productRepository.findAll(pageable);
             }
-            return products; // Returns Product instead of mapping to DTO
+            return products;
         }
 
         public Page<Product> getAllProducts(Pageable pageable) {
-            log.info("Fetching all products with pagination");
             return productRepository.findAll(pageable);
         }
 
         public Product getProductById(Long id) {
-            log.info("Fetching product by ID: {}", id);
+            log.debug("Fetching product by ID: {}", id);
             return productRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("Product not found for ID: " + id));
+                    .orElseThrow(() -> new BusinessException("Product not found for ID: " + id));
         }
 
+    @Transactional
         public Product updateProduct(Long id, ProductDTO updatedProductDTO) {
-            log.info("Updating product ID: {}", id);
-            return productRepository.findById(id).map(product -> {
-                Product updatedProduct = ProductMapper.productDtoToEntity(updatedProductDTO);
-                updatedProduct.setId(product.getId()); // Preserve ID
-                return productRepository.save(updatedProduct);
-            }).orElseThrow(() -> new RuntimeException("Product not found"));
+            log.debug("Updating product ID: {}", id);
+            Product product = productRepository.findByIdWithLock(id).orElseThrow(() -> new BusinessException("Product not found for ID: " + id));
+            product.setName(updatedProductDTO.name());
+            product.setDescription(updatedProductDTO.description());
+            product.setStock(updatedProductDTO.stock());
+            product.setPrice(updatedProductDTO.price());
+            product.setCategory(updatedProductDTO.category());
+            product.setImage(updatedProductDTO.image());
+            product.setRating(updatedProductDTO.rating());
+        return productRepository.save(product);
         }
 
         public void deleteProduct(Long id) {
