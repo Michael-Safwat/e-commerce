@@ -39,23 +39,23 @@ public class CartController {
         return ResponseEntity.ok(cartDto);
     }
 
-    @PatchMapping("/increase")
-    @PreAuthorize("authentication.principal.claims['userId'] == #customerId")
-    public ResponseEntity<CartPreview> increaseProductQuantity(
-            @PathVariable("userId") Long customerId,
-            @RequestBody CartRequest request) {
-        CartPreview cartDto = updateCartItemsService.increaseProductQuantityInCart(customerId, request.productId(), request.quantity());
-        return ResponseEntity.ok(cartDto);
-    }
-
-    @PatchMapping("/decrease")
-    @PreAuthorize("authentication.principal.claims['userId'] == #customerId")
-    public ResponseEntity<CartPreview> decreaseProductQuantity(
-            @PathVariable("userId") Long customerId,
-            @RequestBody CartRequest request) {
-        CartPreview cartDto = updateCartItemsService.decreaseProductQuantityInCart(customerId, request.productId(), request.quantity());
-        return ResponseEntity.ok(cartDto);
-    }
+//    @PatchMapping("/increase")
+//    @PreAuthorize("authentication.principal.claims['userId'] == #customerId")
+//    public ResponseEntity<CartPreview> increaseProductQuantity(
+//            @PathVariable("userId") Long customerId,
+//            @RequestBody CartRequest request) {
+//        CartPreview cartDto = updateCartItemsService.increaseProductQuantityInCart(customerId, request.productId(), request.quantity());
+//        return ResponseEntity.ok(cartDto);
+//    }
+//
+//    @PatchMapping("/decrease")
+//    @PreAuthorize("authentication.principal.claims['userId'] == #customerId")
+//    public ResponseEntity<CartPreview> decreaseProductQuantity(
+//            @PathVariable("userId") Long customerId,
+//            @RequestBody CartRequest request) {
+//        CartPreview cartDto = updateCartItemsService.decreaseProductQuantityInCart(customerId, request.productId(), request.quantity());
+//        return ResponseEntity.ok(cartDto);
+//    }
 
     @GetMapping
     @PreAuthorize("authentication.principal.claims['userId'] == #userId")
@@ -63,4 +63,5 @@ public class CartController {
         CartPreview cart = cartPreviewService.getCartWithItems(userId);
         return ResponseEntity.ok(cart);
     }
+
 }

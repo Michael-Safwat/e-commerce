@@ -48,21 +48,23 @@ public class CartCompositionService {
     }
 
     private Cart findOrCreateCart(Long userId) {
-        return cartRepository.findByUserId(userId).orElseGet(() -> {
-            User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new BusinessException("User isn't found with id: " + userId));
+        return cartRepository.findByUserId(userId).orElse(createCart(userId));
+    }
 
-            Cart newCart = Cart.builder()
-                    .user(user)
-                    .items(new ArrayList<>())
-                    .build();
+    private Cart createCart(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException("User isn't found with id: " + userId));
 
-            Cart savedCart = cartRepository.save(newCart);
-            user.setCart(savedCart);
-            userRepository.save(user);
+        Cart newCart = Cart.builder()
+                .user(user)
+                .items(new ArrayList<>())
+                .build();
 
-            return savedCart;
-        });
+        Cart savedCart = cartRepository.save(newCart);
+        user.setCart(savedCart);
+        userRepository.save(user);
+
+        return savedCart;
     }
 
     private Product fetchProductWithValidation(Long productId, Integer quantity) {
