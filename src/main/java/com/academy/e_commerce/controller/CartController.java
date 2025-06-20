@@ -2,10 +2,7 @@ package com.academy.e_commerce.controller;
 
 import com.academy.e_commerce.dto.CartPreview;
 import com.academy.e_commerce.dto.CartRequest;
-import com.academy.e_commerce.service.cart_service.AddToCartRequest;
-import com.academy.e_commerce.service.cart_service.CartPreviewService;
-import com.academy.e_commerce.service.cart_service.CartCompositionService;
-import com.academy.e_commerce.service.cart_service.CartItemAdjustmentService;
+import com.academy.e_commerce.service.cart_service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +16,7 @@ public class CartController {
     private final CartCompositionService cartCompositionService;
     private final CartPreviewService cartPreviewService;
     private final CartItemAdjustmentService cartItemAdjustmentService;
+    private final ClearCartService clearCartService;
 
     @PostMapping()
     @PreAuthorize("authentication.principal.claims['userId'] == #customerId")
@@ -43,6 +41,13 @@ public class CartController {
     public ResponseEntity<CartPreview> getCartItems(@PathVariable("userId") Long userId) {
         CartPreview cart = cartPreviewService.getCartWithItems(userId);
         return ResponseEntity.ok(cart);
+    }
+
+    @DeleteMapping
+    @PreAuthorize("authentication.principal.claims['userId'] == #userId")
+    public ResponseEntity<Void> clearCart(@PathVariable("userId") Long userId) {
+        clearCartService.clearCart(userId);
+        return ResponseEntity.noContent().build();
     }
 
 }

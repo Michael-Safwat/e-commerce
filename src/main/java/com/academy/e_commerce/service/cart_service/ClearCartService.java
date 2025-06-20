@@ -1,5 +1,6 @@
 package com.academy.e_commerce.service.cart_service;
 
+import com.academy.e_commerce.advice.BusinessException;
 import com.academy.e_commerce.model.Cart;
 import com.academy.e_commerce.repository.CartProductRepository;
 import com.academy.e_commerce.repository.CartRepository;
@@ -21,8 +22,8 @@ public class ClearCartService {
     public void clearCart(Long userId) {
         log.debug("Clearing cart for user {}", userId);
 
-        Cart cart = cartRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Cart not found for user ID: " + userId));
+        Cart cart = cartRepository.findWithWriteLockByUserId(userId)
+                .orElseThrow(() -> new BusinessException("Cart not found for user ID: " + userId));
 
         cartProductRepository.deleteByCart(cart.getId());
 
