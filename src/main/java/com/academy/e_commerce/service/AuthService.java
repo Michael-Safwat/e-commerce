@@ -44,11 +44,6 @@ public class AuthService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        boolean isLocked = user.getIsLocked();
-        if (!isLocked) {
-            throw new IllegalStateException("Account is not locked.");
-        }
-
         String token = UUID.randomUUID().toString();
         user.setResetToken(token);
         user.setResetExpiryDate(LocalDateTime.now().plusHours(2));
