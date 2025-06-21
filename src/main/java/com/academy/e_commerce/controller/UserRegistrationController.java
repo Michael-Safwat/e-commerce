@@ -2,7 +2,7 @@ package com.academy.e_commerce.controller;
 
 import com.academy.e_commerce.service.UserRegistrationService;
 import com.academy.e_commerce.dto.UserRegistrationDTO;
-import com.academy.e_commerce.dto.UserDTO;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,9 +18,8 @@ public class UserRegistrationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserDTO> register(@RequestBody UserRegistrationDTO dto) {
-        UserDTO user = userRegistrationService.registerUser(dto);
-        return ResponseEntity.ok(user);
+    public ResponseEntity<String> register(@RequestBody @Valid UserRegistrationDTO dto) {
+        return ResponseEntity.ok( userRegistrationService.registerUser(dto));
     }
 
     @GetMapping("/verify")

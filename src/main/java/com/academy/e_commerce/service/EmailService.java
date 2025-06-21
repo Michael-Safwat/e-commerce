@@ -18,9 +18,12 @@ public class EmailService {
     @Value("${api.endpoint.base-url}")
     private String baseUrl;
 
+    @Value("${frontend.base-url}")
+    private String frontendBaseUrl;
+
     public void sendVerificationEmail(String toEmail, String name, String token) {
         String subject = "Verify Your Email";
-        String verifyLink = "http://localhost:8080" + baseUrl + "/users/verify?token=" + token;
+        String verifyLink ="http://localhost:8080"+ baseUrl + "/users/verify?token=" + token;
 
         String html = """
             <p>Dear %s,</p>
@@ -51,7 +54,7 @@ public class EmailService {
 
     public void sendReactivationEmail(String toEmail, String name, String token) {
         String subject = "Reset Your Password";
-        String resetLink = "http://localhost:8080" + baseUrl + "/reset-password?token=" + token;
+        String resetLink = frontendBaseUrl + token;
 
         String html = """
             <p>Dear %s,</p>
@@ -87,7 +90,6 @@ public class EmailService {
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(htmlContent, true);    // true = isHtml
-            helper.setFrom("E-commerce-app@outlook.com");
             mailSender.send(mime);
         } catch (MessagingException e) {
             throw new RuntimeException("Failed to send email to " + to, e);

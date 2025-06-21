@@ -43,7 +43,7 @@ public class LoginFailureListener implements ApplicationListener<AuthenticationF
         if (failed >= 3) {
             user.setIsLocked(true);
             userRepository.save(user);
-            authService.sendReactivationLink(email);
+//            authService.sendReactivationLink(email);
             return;
         }
 

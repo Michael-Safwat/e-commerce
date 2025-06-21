@@ -60,9 +60,9 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, this.baseUrl + "/users/verify/**").permitAll()
                         .requestMatchers(HttpMethod.POST, this.baseUrl + "/webhook").permitAll()
                         .requestMatchers(HttpMethod.POST, this.baseUrl + "/users/{userId}/pay/{orderId}").hasAuthority(this.ROLE_CUSTOMER)
-                        .requestMatchers(HttpMethod.POST, this.baseUrl + "/admins/register/**").hasAnyAuthority(this.ROLE_SUPER_ADMIN)
-                        .requestMatchers(HttpMethod.PUT, this.baseUrl + "/admins/**").hasAnyAuthority(this.ROLE_SUPER_ADMIN)
-                        .requestMatchers(HttpMethod.DELETE, this.baseUrl + "/admins/**").hasAnyAuthority(this.ROLE_SUPER_ADMIN)
+                        .requestMatchers(HttpMethod.POST, this.baseUrl + "/portal/register/**").hasAnyAuthority(this.ROLE_SUPER_ADMIN)
+                        .requestMatchers(HttpMethod.PUT, this.baseUrl + "/portal/**").hasAnyAuthority(this.ROLE_SUPER_ADMIN)
+                        .requestMatchers(HttpMethod.DELETE, this.baseUrl + "/portal/**").hasAnyAuthority(this.ROLE_SUPER_ADMIN)
                         .requestMatchers(HttpMethod.GET, this.baseUrl + "/products/search").hasAnyAuthority(this.ROLE_SUPER_ADMIN, this.ROLE_ADMIN, this.ROLE_CUSTOMER)
                         .requestMatchers(HttpMethod.POST, this.baseUrl + "/portal/products/**").hasAnyAuthority(this.ROLE_SUPER_ADMIN, this.ROLE_ADMIN)
                         .requestMatchers(HttpMethod.PUT, this.baseUrl + "/portal/products/**").hasAnyAuthority(this.ROLE_SUPER_ADMIN, this.ROLE_ADMIN)
@@ -96,8 +96,12 @@ public class SecurityConfiguration {
     public CorsConfigurationSource corsConfigurationSource() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:4200"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"));
+        configuration.setAllowedOrigins(List.of(
+                "http://localhost:4200",
+                "http://localhost:5173",
+                "http://localhost:8081"
+
+        ));        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Cache-Control", "X-Requested-With", "Accept"));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
