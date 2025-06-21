@@ -14,7 +14,6 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
 
-
     @Value("${api.endpoint.base-url}")
     private String baseUrl;
 

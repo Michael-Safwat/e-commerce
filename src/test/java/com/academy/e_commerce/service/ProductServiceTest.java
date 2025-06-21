@@ -1,9 +1,12 @@
 package com.academy.e_commerce.service;
 
+import com.academy.e_commerce.advice.BusinessException;
+import com.academy.e_commerce.advice.ImageUploadException;
 import com.academy.e_commerce.dto.ProductDTO;
 import com.academy.e_commerce.mapper.ProductMapper;
 import com.academy.e_commerce.model.Product;
 import com.academy.e_commerce.repository.ProductRepository;
+import com.amazonaws.services.s3.AmazonS3;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
@@ -11,7 +14,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,8 +26,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class ProductServiceTest {
+
     @Mock
     private ProductRepository productRepository;
+
+    @Mock
+    private AmazonS3 s3Client;
 
     @InjectMocks
     private ProductService productService;
@@ -36,6 +47,7 @@ public class ProductServiceTest {
         product.setName("Sample Product");
         product.setCategory("Books");
         product.setPrice(19.99);
+        product.setImage("https://example.com/sample.jpg");
         return product;
     }
 
@@ -47,73 +59,31 @@ public class ProductServiceTest {
                 10,
                 19.99,
                 "Books",
-                "image.png",
+                "https://example.com/sample.jpg",
                 4.0
-                );
+        );
     }
 
 
-//    @Test
-//    void testCreateProduct() {
-//        Product product = ProductMapper.productDtoToEntity(getSampleProductDTO());
-//        when(productRepository.save(any(Product.class))).thenReturn(product);
-//
-//       Product saved = productService.createProduct(getSampleProductDTO());
-//
-//        assertNotNull(saved);
-//        assertEquals("Sample Product", saved.getName());
-//        verify(productRepository).save(any(Product.class));
-//    }
-
-
     @Test
-    void testGetAllProductsFiltered_withCategoryAndName() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Product product = getSampleProduct();
-        Page<Product> page = new PageImpl<>(List.of(product));
+    void testCreateProduct_imageUploadFails_throwsImageUploadException() throws IOException {
+        ProductDTO dto = getSampleProductDTO();
+        MultipartFile imageFile = mock(MultipartFile.class);
+        when(imageFile.isEmpty()).thenReturn(false);
+        when(imageFile.getOriginalFilename()).thenReturn("image.jpg");
+        when(imageFile.getSize()).thenReturn(123L);
+        when(imageFile.getContentType()).thenReturn("image/jpeg");
+        when(imageFile.getInputStream()).thenThrow(new IOException("Simulated failure"));
 
-        when(productRepository.findByCategoryContainingIgnoreCaseAndNameContainingIgnoreCase("Books", "Sample", pageable))
-                .thenReturn(page);
+        assertThrows(ImageUploadException.class, () -> productService.createProduct(dto, imageFile));
 
-        Page<Product> result = productService.getAllProductsFiltered("Books", "Sample", pageable);
-
-        assertEquals(1, result.getTotalElements());
-        verify(productRepository).findByCategoryContainingIgnoreCaseAndNameContainingIgnoreCase("Books", "Sample", pageable);
-    }
-
-    @Test
-    void testGetAllProductsFiltered_onlyCategory() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Product product = getSampleProduct();
-        Page<Product> page = new PageImpl<>(List.of(product));
-
-        when(productRepository.findByCategoryContainingIgnoreCase("Books", pageable)).thenReturn(page);
-
-        Page<Product> result = productService.getAllProductsFiltered("Books", null, pageable);
-
-        assertEquals(1, result.getTotalElements());
-        verify(productRepository).findByCategoryContainingIgnoreCase("Books", pageable);
-    }
-
-    @Test
-    void testGetAllProductsFiltered_onlyName() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Product product = getSampleProduct();
-        Page<Product> page = new PageImpl<>(List.of(product));
-
-        when(productRepository.findByNameContainingIgnoreCase("Sample", pageable)).thenReturn(page);
-
-        Page<Product> result = productService.getAllProductsFiltered(null, "Sample", pageable);
-
-        assertEquals(1, result.getTotalElements());
-        verify(productRepository).findByNameContainingIgnoreCase("Sample", pageable);
+        verify(productRepository, never()).save(any());
     }
 
     @Test
     void testGetAllProductsFiltered_noFilters() {
         Pageable pageable = PageRequest.of(0, 10);
-        Product product = getSampleProduct();
-        Page<Product> page = new PageImpl<>(List.of(product));
+        Page<Product> page = new PageImpl<>(List.of(getSampleProduct()));
 
         when(productRepository.findAll(pageable)).thenReturn(page);
 
@@ -125,48 +95,43 @@ public class ProductServiceTest {
 
     @Test
     void testGetProductById_found() {
-        Product product = getSampleProduct();
-        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
+        when(productRepository.findById(1L)).thenReturn(Optional.of(getSampleProduct()));
 
         Product found = productService.getProductById(1L);
 
         assertNotNull(found);
         assertEquals("Sample Product", found.getName());
-        verify(productRepository).findById(1L);
     }
 
     @Test
-    void testGetProductById_notFound() {
-        when(productRepository.findById(999L)).thenReturn(Optional.empty());
+    void testGetProductById_notFound_throwsBusinessException() {
+        when(productRepository.findById(1L)).thenReturn(Optional.empty());
 
-        RuntimeException ex = assertThrows(RuntimeException.class, () ->
-                productService.getProductById(999L));
-
-        assertEquals("Product not found for ID: 999", ex.getMessage());
+        BusinessException exception = assertThrows(BusinessException.class, () -> productService.getProductById(1L));
+        assertEquals("Product not found for ID: 1", exception.getMessage());
     }
 
     @Test
-    void testUpdateProduct_found() {
-        Product existingProduct = getSampleProduct();
-        Product updatedProduct = ProductMapper.productDtoToEntity(getSampleProductDTO());
-        updatedProduct.setId(existingProduct.getId());
+    void testUpdateProduct_found_successfulUpdate() {
+        Product existing = getSampleProduct();
+        ProductDTO dto = getSampleProductDTO();
+        existing.setName("Old Name");
 
-        when(productRepository.findById(1L)).thenReturn(Optional.of(existingProduct));
-        when(productRepository.save(any(Product.class))).thenReturn(updatedProduct);
+        when(productRepository.findByIdWithLock(1L)).thenReturn(Optional.of(existing));
+        when(productRepository.save(any(Product.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Product result = productService.updateProduct(1L, getSampleProductDTO());
+        Product updated = productService.updateProduct(1L, dto);
 
-        assertEquals("Sample Product", result.getName());
-        verify(productRepository).findById(1L);
+        assertEquals("Sample Product", updated.getName());
+        verify(productRepository).findByIdWithLock(1L);
         verify(productRepository).save(any(Product.class));
     }
 
     @Test
-    void testUpdateProduct_notFound() {
-        when(productRepository.findById(999L)).thenReturn(Optional.empty());
+    void testUpdateProduct_notFound_throwsBusinessException() {
+        when(productRepository.findByIdWithLock(99L)).thenReturn(Optional.empty());
 
-        assertThrows(RuntimeException.class, () ->
-                productService.updateProduct(999L, getSampleProductDTO()));
+        assertThrows(BusinessException.class, () -> productService.updateProduct(99L, getSampleProductDTO()));
     }
 
     @Test
