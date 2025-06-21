@@ -18,9 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +31,7 @@ public class ProductService {
     private String bucketName;
 
     public Product createProduct(ProductDTO productDTO, MultipartFile imageFile) {
-        log.info("Creating new product: {}", productDTO.name());
+        log.debug("Creating new product: {}", productDTO.name());
         Product product = ProductMapper.productDtoToEntity(productDTO);
 
         if (imageFile != null && !imageFile.isEmpty()) {
@@ -58,7 +55,7 @@ public class ProductService {
 
 
     public Page<Product> getAllProductsFiltered(String category, String name, Pageable pageable) {
-            log.info("Fetching products with filters: category={}, name={}", category, name);
+            log.debug("Fetching products with filters: category={}, name={}", category, name);
 
             Page<Product> products;
             boolean hasCategory = StringUtils.hasText(category);
@@ -101,7 +98,6 @@ public class ProductService {
         }
 
         public void deleteProduct(Long id) {
-            log.info("Deleting product ID: {}", id);
             productRepository.deleteById(id);
         }
 }

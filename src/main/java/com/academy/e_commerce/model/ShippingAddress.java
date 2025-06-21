@@ -26,13 +26,10 @@ public class ShippingAddress {
     @Column(name = "state", nullable = false)
     private String state;
 
-    @Column(name = "zip_code", nullable = false, length = 10)
-    private String zipCode;
-
     @Column(name = "country", nullable = false)
     private String country;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false) // Defines the foreign key column
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 }
