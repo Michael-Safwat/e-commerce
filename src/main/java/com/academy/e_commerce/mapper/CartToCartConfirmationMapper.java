@@ -14,9 +14,11 @@ public class CartToCartConfirmationMapper {
         return new CartConfirmation(
                 cart.getId(),
                 cart.getUser() != null ? cart.getUser().getId() : null,
-                cart.getItems(),
+                cart.getItems().stream()
+                        .map(CartProductMapper::toPreview)
+                        .toList(),
                 calculateTotalPrice(cart.getItems()),
-                cart.getShippingAddress().toString()
+                ShippingAddressMapper.toResponse(cart.getShippingAddress())
         );
     }
 }
