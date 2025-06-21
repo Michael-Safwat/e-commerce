@@ -10,8 +10,11 @@ public class UserMapper {
 
     public static UserDTO userToUserDTO(User user) {
         return new UserDTO(
+                user.getId(),
                 user.getEmail(),
-                user.getName()
+                user.getName(),
+                user.getIsVerified(),
+                user.getIsLocked()
                 );
     }
 
