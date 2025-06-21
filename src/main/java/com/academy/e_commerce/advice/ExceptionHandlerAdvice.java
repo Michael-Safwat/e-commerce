@@ -3,8 +3,7 @@ package com.academy.e_commerce.advice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.AccountStatusException;
-import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.*;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.server.resource.InvalidBearerTokenException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -43,6 +42,22 @@ public class ExceptionHandlerAdvice {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body("Password reset error: " + ex.getMessage());
+    }
+
+    @ExceptionHandler(InternalAuthenticationServiceException.class)
+    public ResponseEntity<Map<String, String>> handleInternalError(InternalAuthenticationServiceException ex) {
+        Throwable cause = ex.getCause();
+        String message = "Authentication failed";
+
+        if (cause instanceof DisabledException) {
+            message = "User account is not verified";
+        } else if (cause instanceof LockedException) {
+            message = "User account is locked";
+        }
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(Map.of("error", message));
     }
 
     @ExceptionHandler({UsernameNotFoundException.class, BadCredentialsException.class})
