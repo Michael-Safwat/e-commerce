@@ -1,6 +1,7 @@
 package com.academy.e_commerce.service;
 
 import com.academy.e_commerce.advice.SuperAdminDeletionException;
+import com.academy.e_commerce.dto.AdminDTO;
 import com.academy.e_commerce.dto.UserDTO;
 import com.academy.e_commerce.dto.UserRegistrationDTO;
 import com.academy.e_commerce.mapper.UserMapper;
@@ -12,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -37,9 +40,10 @@ public class AdminService {
         User savedAdmin = userRepository.save(user);
         return UserMapper.userToUserDTO(savedAdmin);
     }
-    public Page<UserDTO> getAllAdmins(Pageable pageable) {
-        Page<User> admins = userRepository.findAll(pageable);
-        return admins.map(UserMapper::userToUserDTO);
+    public Page<AdminDTO> getAllAdmins(Pageable pageable) {
+        List<Role> adminRoles = Arrays.asList(Role.ADMIN, Role.SUPER_ADMIN);
+        Page<User> admins = userRepository.findByRolesIn(adminRoles, pageable);
+        return admins.map(UserMapper::userToAdminDTO);
     }
 
     public Optional<UserDTO> getAdminById(Long id) {
