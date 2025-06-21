@@ -73,6 +73,11 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, this.baseUrl + CART_BASE_PATH).hasAuthority(this.ROLE_CUSTOMER)
                         .requestMatchers(HttpMethod.GET, this.baseUrl + CART_BASE_PATH).hasAuthority(this.ROLE_CUSTOMER)
                         .requestMatchers(HttpMethod.PATCH, this.baseUrl + CART_BASE_PATH +"/**").hasAuthority(this.ROLE_CUSTOMER)
+                        .requestMatchers(HttpMethod.POST, this.baseUrl + "/users/{userId}/shippingAddresses").hasAuthority(this.ROLE_CUSTOMER)
+                        .requestMatchers(HttpMethod.GET, this.baseUrl + "/users/{userId}/addresses/{addressId}").hasAuthority(this.ROLE_CUSTOMER)
+                        .requestMatchers(HttpMethod.GET, this.baseUrl + "/users/{userId}/addresses").hasAuthority(this.ROLE_CUSTOMER)
+                        .requestMatchers(HttpMethod.PUT, this.baseUrl + "/users/{userId}/addresses/{addressId}").hasAuthority(this.ROLE_CUSTOMER)
+                        .requestMatchers(HttpMethod.DELETE, this.baseUrl + "/users/{userId}/addresses/{addressId}").hasAuthority(this.ROLE_CUSTOMER)
 
                         // Disallow anything else.
                         .anyRequest().authenticated()
