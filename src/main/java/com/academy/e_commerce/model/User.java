@@ -1,17 +1,15 @@
 package com.academy.e_commerce.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
-import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
@@ -27,6 +25,10 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Pattern(
+            regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
+            message = "Invalid email format"
+    )
     @NotBlank(message = "email can't be empty")
     @Email(message = "must be valid email")
     @Column(unique = true)
