@@ -16,7 +16,7 @@ public class CartToCartConfirmationMapper {
                 cart.getUser() != null ? cart.getUser().getId() : null,
                 cart.getItems(),
                 calculateTotalPrice(cart.getItems()),
-                cart.getShippingAddress()
+                cart.getShippingAddress().toString()
         );
     }
 }

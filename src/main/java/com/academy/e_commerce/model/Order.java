@@ -26,7 +26,7 @@ public class Order{
     private String status;
     private Double totalPrice;
 
-    private String shippingAddress;
+    private ShippingAddress shippingAddress;
 
     private LocalDateTime createdAt;
 
