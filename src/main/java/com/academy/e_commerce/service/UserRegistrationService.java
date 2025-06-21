@@ -10,6 +10,7 @@ import com.academy.e_commerce.model.User;
 import com.academy.e_commerce.model.VerificationToken;
 import com.academy.e_commerce.repository.UserRepository;
 import com.academy.e_commerce.repository.VerificationTokenRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,7 +33,7 @@ public class UserRegistrationService {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
 
-    public UserDTO registerUser(UserRegistrationDTO registrationDTO) {
+    public String registerUser(UserRegistrationDTO registrationDTO) {
         Optional<User> optionalUser = userRepository.findByEmail(registrationDTO.email());
 
         if (optionalUser.isPresent()) {
@@ -48,8 +49,9 @@ public class UserRegistrationService {
             throw new RegistrationException("Verification email resent. Check your inbox.");
         }
 
-        // Create new user if not exists
-        return createNewUser(registrationDTO);
+        UserDTO registeredUser = createNewUser(registrationDTO);
+
+        return "User Registration Successful!";
     }
 
     private UserDTO createNewUser(UserRegistrationDTO registrationDTO) {
