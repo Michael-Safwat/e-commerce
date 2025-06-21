@@ -14,7 +14,7 @@ public class OrderToOrderResponseMapper {
                 order.getUser().getId(),
                 order.getStatus(),
                 order.getTotalPrice(),
-                order.getShippingAddress(),
+                order.getShippingAddress().getId(),
                 order.getCreatedAt(),
                 order.getOrderProducts()
         );

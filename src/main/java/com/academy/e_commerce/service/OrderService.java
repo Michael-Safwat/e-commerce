@@ -2,6 +2,7 @@ package com.academy.e_commerce.service;
 
 import com.academy.e_commerce.advice.BusinessException;
 import com.academy.e_commerce.advice.OrderNotFoundException;
+import com.academy.e_commerce.advice.UnauthorizedAccessException;
 import com.academy.e_commerce.dto.CartConfirmation;
 import com.academy.e_commerce.dto.OrderConfirmationRequest;
 import com.academy.e_commerce.dto.OrderDTO;
@@ -12,6 +13,7 @@ import com.academy.e_commerce.model.*;
 import com.academy.e_commerce.repository.CartRepository;
 import com.academy.e_commerce.repository.OrderRepository;
 import com.academy.e_commerce.repository.ProductRepository;
+import com.academy.e_commerce.repository.ShippingAddressRepository;
 import com.academy.e_commerce.service.cart_service.ClearCartService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +40,7 @@ public class OrderService {
     private final ClearCartService clearCartService;
     private final ProductRepository productRepository;
     private final CartRepository cartRepository;
-
+    private final ShippingAddressRepository shippingAddressRepository;
 
     public Page<OrderDTO> getAllOrdersByCustomerId(Long customerId, Pageable pageable) {
         Page<Order> orders = this.orderRepository.findAllByUser_Id(customerId, pageable);
@@ -62,7 +64,15 @@ public class OrderService {
         if (cart.getItems().isEmpty()) {
             throw new BusinessException("Cart is empty, cannot proceed with checkout.");
         }
-        cart.setShippingAddress(request.shippingAddress());
+
+        ShippingAddress shippingAddress = shippingAddressRepository.findById(request.shippingAddressId())
+                .orElseThrow(() -> new BusinessException("Shipping address not found"));
+
+        if (!shippingAddress.getUser().getId().equals(userId)) {
+            throw new UnauthorizedAccessException("Unauthorized access to this shipping address");
+        }
+
+        cart.setShippingAddress(shippingAddress);
         cartRepository.save(cart);
         return CartToCartConfirmationMapper.toConfirmation(cart);
     }

@@ -26,7 +26,9 @@ public class Order{
     private String status;
     private Double totalPrice;
 
-    private String shippingAddress;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shipping_address_id")
+    private ShippingAddress shippingAddress;
 
     private LocalDateTime createdAt;
 

@@ -9,7 +9,7 @@ public record OrderDTO(
         Long id,
         String status,
         Double totalPrice,
-        String shippingAddress,
+        Long shippingAddress_id,
         List<OrderProduct> items,
         LocalDateTime createdAt
 ) {}

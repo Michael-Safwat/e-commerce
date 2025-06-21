@@ -1,10 +1,6 @@
 package com.academy.e_commerce.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -27,6 +23,7 @@ public class Cart {
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL , fetch = FetchType.EAGER)
     private List<CartProduct> items = new ArrayList<>();
 
-
-    private String shippingAddress;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shipping_address_id")
+    private ShippingAddress shippingAddress;
 }

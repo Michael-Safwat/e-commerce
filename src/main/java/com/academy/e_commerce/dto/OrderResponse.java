@@ -4,14 +4,13 @@ import com.academy.e_commerce.model.OrderProduct;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 public record OrderResponse(
         Long id,
         Long userId,
         String status,
         Double totalPrice,
-        String shippingAddress,
+        Long shippingAddress,
         LocalDateTime createdAt,
         List<OrderProduct> orderProducts
 ){}
