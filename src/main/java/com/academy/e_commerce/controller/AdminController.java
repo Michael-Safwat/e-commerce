@@ -1,5 +1,6 @@
 package com.academy.e_commerce.controller;
 
+import com.academy.e_commerce.dto.AdminDTO;
 import com.academy.e_commerce.dto.UserDTO;
 import com.academy.e_commerce.dto.UserRegistrationDTO;
 import com.academy.e_commerce.service.AdminService;
@@ -29,7 +30,7 @@ public class AdminController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<UserDTO>> getAllAdmins(
+    public ResponseEntity<Page<AdminDTO>> getAllAdmins(
             @PageableDefault(size = 10, page = 0) Pageable pageable
     ) {
         return new ResponseEntity<>(adminService.getAllAdmins(pageable), HttpStatus.OK);
