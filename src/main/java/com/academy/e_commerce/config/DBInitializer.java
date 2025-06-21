@@ -5,6 +5,7 @@ import com.academy.e_commerce.model.Role;
 import com.academy.e_commerce.model.User;
 import com.academy.e_commerce.repository.ProductRepository;
 import com.academy.e_commerce.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.Resource;
@@ -22,9 +23,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+@Slf4j
 @Component
 public class DBInitializer implements CommandLineRunner {
-
     @Value("${admin.name}")
     private String adminName;
 
@@ -54,19 +55,17 @@ public class DBInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        System.out.println("🚀 Starting database initialization...");
+        log.info("Starting database initialization...");
 
-        // Create admin user
         createAdminUser();
 
-        // Create products with S3 image uploads
         createProductsWithImages();
 
-        System.out.println("✅ Database initialization completed!");
+        log.info("Database initialization completed.");
     }
 
     private void createAdminUser() {
-        System.out.println("👤 Creating admin user...");
+        log.info("Creating admin user...");
 
         User admin = User.builder()
                 .name(adminName)
@@ -79,11 +78,11 @@ public class DBInitializer implements CommandLineRunner {
                 .build();
 
         userRepository.save(admin);
-        System.out.println("✅ Admin user created successfully");
+        log.info("Admin user created successfully.");
     }
 
     private void createProductsWithImages() {
-        System.out.println("📦 Creating products with S3 image uploads...");
+        log.info("Creating products with S3 image uploads...");
 
         List<Product> products = List.of(
                 createProductWithImage("Wireless Headphones Pro",
@@ -119,12 +118,12 @@ public class DBInitializer implements CommandLineRunner {
                 createProductWithImage("Bluetooth Speaker",
                         "Portable Bluetooth speaker with deep bass",
                         129.0, "electronics",
-                        "https://images.unsplash.com/photo-1512446733611-9099a758e63c?w=400&h=400&fit=crop",
+                        "https://images.unsplash.com/photo-1529359744902-86b2ab9edaea?w=400&h=400&fit=crop",
                         4.4),
                 createProductWithImage("Yoga Mat",
                         "Eco-friendly non-slip yoga mat",
                         39.0, "sports",
-                        "https://images.unsplash.com/photo-1519864600265-abb23847ef2c?w=400&h=400&fit=crop",
+                        "https://images.unsplash.com/photo-1591291621060-89264efbeaed?w=400&h=400&fit=crop",
                         4.7),
                 createProductWithImage("Leather Wallet",
                         "Classic genuine leather wallet",
@@ -174,7 +173,7 @@ public class DBInitializer implements CommandLineRunner {
                 createProductWithImage("Yoga Block",
                         "Support your yoga practice with this sturdy block.",
                         19.0, "sports",
-                        "https://images.unsplash.com/photo-1519864600265-abb23847ef2c?w=400&h=400&fit=crop",
+                        "https://images.unsplash.com/photo-1646239646963-b0b9be56d6b5?w=400&h=400&fit=crop",
                         4.7),
                 createProductWithImage("Graphic Tee",
                         "Trendy graphic t-shirt made from organic cotton.",
@@ -199,12 +198,12 @@ public class DBInitializer implements CommandLineRunner {
         );
 
         productRepository.saveAll(products);
-        System.out.println("✅ " + products.size() + " products created successfully");
+        log.info("{} products created successfully.", products.size());
     }
 
     private Product createProductWithImage(String name, String description, Double price,
                                            String category, String imageUrl, Double rating) {
-        System.out.println("📝 Processing product: " + name);
+        log.info("Processing product: {}", name);
 
         String s3ImageUrl = uploadImageToS3(imageUrl, name);
 
@@ -221,19 +220,16 @@ public class DBInitializer implements CommandLineRunner {
 
     private String uploadImageToS3(String imageUrl, String productName) {
         try {
-            System.out.println("  📤 Uploading image for: " + productName);
+            log.info("Uploading image for: {}", productName);
 
-            // Generate unique key for S3
             String key = "products/" + UUID.randomUUID() + "_" +
                     productName.replaceAll("[^a-zA-Z0-9]", "_") + ".jpg";
 
-            // Download image from URL
             Resource resource = new UrlResource(new URL(imageUrl));
             Path tempFile = Files.createTempFile("product_img_", ".jpg");
             Files.copy(resource.getInputStream(), tempFile,
                     java.nio.file.StandardCopyOption.REPLACE_EXISTING);
 
-            // Upload to S3 using AWS SDK v1
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType("image/jpeg");
             metadata.setContentLength(Files.size(tempFile));
@@ -241,18 +237,15 @@ public class DBInitializer implements CommandLineRunner {
             amazonS3.putObject(new PutObjectRequest(bucketName, key, tempFile.toFile())
                     .withMetadata(metadata));
 
-            // Clean up temp file
             Files.deleteIfExists(tempFile);
 
-            // Return S3 URL (LocalStack endpoint)
             String s3Url = "http://localhost:4566/" + bucketName + "/" + key;
-            System.out.println("  ✅ Image uploaded: " + s3Url);
+            log.info("Image uploaded: {}", s3Url);
 
             return s3Url;
 
         } catch (Exception e) {
-            System.err.println("  ❌ Failed to upload image for " + productName + ": " + e.getMessage());
-            // Return original URL as fallback
+            log.error("Failed to upload image for {}: {}", productName, e.getMessage());
             return imageUrl;
         }
     }
