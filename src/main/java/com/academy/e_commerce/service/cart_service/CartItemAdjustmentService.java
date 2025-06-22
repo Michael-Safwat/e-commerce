@@ -42,7 +42,6 @@ public class CartItemAdjustmentService {
         if (quantity == 0) {
             cart.getItems().remove(cartProduct);
             cartProductRepository.delete(cartProduct);
-//            cartProductRepository.flush();
         } else {
             validateStock(product, quantity);
             cartProduct.setQuantity(quantity);
