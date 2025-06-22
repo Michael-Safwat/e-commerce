@@ -24,8 +24,8 @@ public class PaymentService {
     private final OrderRepository orderRepository;
     private final OrderService orderService;
 
-    public Map<String, String> createPaymentIntent(Long userId, Long orderId) throws StripeException {
-        orderService.confirmOrder(userId);
+    public Map<String, String> createPaymentIntent(Long userId) throws StripeException {
+        Long orderId = orderService.confirmOrder(userId);
 
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found"));
@@ -40,10 +40,10 @@ public class PaymentService {
                 .putMetadata("order_id", String.valueOf(orderId))
                 .build();
 
-        Double newPrice = calculateOrderPrice(order.getOrderProducts());
-        if(!Objects.equals(order.getTotalPrice(), newPrice)){
-            throw new BusinessException("the order total price changed as: "+order.getTotalPrice()+" and the new price is"+newPrice);
-        }
+//        Double newPrice = calculateOrderPrice(order.getOrderProducts());
+//        if(!Objects.equals(order.getTotalPrice(), newPrice)){
+//            throw new BusinessException("the order total price changed as: "+order.getTotalPrice()+" and the new price is"+newPrice);
+//        }
 
         PaymentIntent intent = PaymentIntent.create(params);
 

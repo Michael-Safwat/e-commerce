@@ -61,7 +61,26 @@ public class DBInitializer implements CommandLineRunner {
 
         createProductsWithImages();
 
+        createCustomerUser();
+
         log.info("Database initialization completed.");
+    }
+
+    private void createCustomerUser(){
+        log.info("Creating customer user...");
+
+        User customer = User.builder()
+                .name("Michael")
+                .email("mikesafwat34@gmail.com")
+                .password(passwordEncoder.encode("123456"))
+                .isLocked(false)
+                .isVerified(true)
+                .failedAttempts(0)
+                .roles(Set.of(Role.CUSTOMER))
+                .build();
+
+        userRepository.save(customer);
+        log.info("Customer added successfully");
     }
 
     private void createAdminUser() {

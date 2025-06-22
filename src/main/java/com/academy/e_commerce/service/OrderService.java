@@ -78,7 +78,7 @@ public class OrderService {
     }
 
     @Transactional
-    public void confirmOrder(Long userId) {
+    public Long confirmOrder(Long userId) {
         Cart cart = cartRepository.findWithWriteLockByUserId(userId)
                 .orElseThrow(() -> new BusinessException("Cart not found for user ID: " + userId));
 
@@ -106,6 +106,8 @@ public class OrderService {
 
         clearCartService.clearCart(userId);
         orderRepository.save(order);
+
+        return order.getId();
     }
 
     @Transactional
