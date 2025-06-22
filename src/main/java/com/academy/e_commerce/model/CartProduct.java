@@ -1,6 +1,5 @@
 package com.academy.e_commerce.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,7 +15,7 @@ public class CartProduct {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cart_id", nullable = false)
+    @JoinColumn(name = "cart_id",nullable = false)
     private Cart cart;
 
     @ManyToOne(fetch = FetchType.LAZY)
