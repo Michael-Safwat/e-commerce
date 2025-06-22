@@ -31,7 +31,7 @@ public class PaymentController {
     public ResponseEntity<Map<String, String>> createPaymentIntent(
             @PathVariable Long userId) throws StripeException {
 
-        Map<String, String> response = paymentService.createPaymentIntent(userId);
+        Map<String, String> response = paymentService.createCheckoutSession(userId);
         return ResponseEntity.ok(response);
     }
 }
