@@ -14,8 +14,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 import static com.academy.e_commerce.utils.CartHelper.validateStock;
 
 @Service
@@ -48,14 +46,7 @@ public class CartItemAdjustmentService {
             cartProductRepository.save(cartProduct);
         }
 
-        List<CartProduct> updatedItems = cartProductRepository.findByCart(cart);
-        if (updatedItems.isEmpty()) {
-            throw new BusinessException("Your cart is empty");
-        }
-
-        cart.setItems(updatedItems);
         return CartToCartPreviewMapper.toPreview(cart);
     }
-
 
 }
