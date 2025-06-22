@@ -27,24 +27,12 @@ public class PaymentController {
     private final OrderRepository orderRepository;
     private final PaymentService paymentService;
 
-    @PostMapping("/{userId}/pay/{orderId}")
+    @PostMapping("/{userId}/pay")
     public ResponseEntity<Map<String, String>> createPaymentIntent(
-            @PathVariable Long userId,
-            @PathVariable Long orderId) throws StripeException {
+            @PathVariable Long userId) throws StripeException {
 
-        Map<String, String> response = paymentService.createPaymentIntent(userId, orderId);
+        Map<String, String> response = paymentService.createPaymentIntent(userId);
         return ResponseEntity.ok(response);
     }
-
-    // dummy endpoint for testing from backend
-    @PostMapping("/{userId}/paytest/{orderId}")
-    public ResponseEntity<String> simulatePaymentIntentSucceeded(@PathVariable Long orderId) {
-        return orderRepository.findById(orderId).map(order -> {
-            order.setStatus("PAID");
-            orderRepository.save(order);
-            return ResponseEntity.ok("Simulated payment_intent.succeeded for order ID: " + orderId);
-        }).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body("Order not found"));
-    }
-
 }
 
