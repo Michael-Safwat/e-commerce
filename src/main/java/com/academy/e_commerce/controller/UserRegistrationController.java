@@ -1,5 +1,6 @@
 package com.academy.e_commerce.controller;
 
+import com.academy.e_commerce.dto.TokenRequest;
 import com.academy.e_commerce.service.UserRegistrationService;
 import com.academy.e_commerce.dto.UserRegistrationDTO;
 import jakarta.validation.Valid;
@@ -22,9 +23,10 @@ public class UserRegistrationController {
         return ResponseEntity.ok( userRegistrationService.registerUser(dto));
     }
 
-    @GetMapping("/verify")
-    public ResponseEntity<String> verify(@RequestParam String token) {
-        userRegistrationService.verifyUser(token);
+    @PostMapping("/verify")
+    public ResponseEntity<String> verify(@RequestBody TokenRequest request) {
+        userRegistrationService.verifyUser(request.getToken());
         return ResponseEntity.ok("Account successfully verified.");
     }
+
 }

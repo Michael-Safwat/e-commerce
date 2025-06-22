@@ -36,12 +36,21 @@ public class ExceptionHandlerAdvice {
                 .body("Verification error: " + ex.getMessage());
     }
 
-    @ExceptionHandler(PasswordResetException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> handlePasswordResetError(PasswordResetException ex) {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body("Password reset error: " + ex.getMessage());
+    @ExceptionHandler(PasswordAlreadyUsedException.class)
+    public ResponseEntity<ErrorResponse> handlePasswordAlreadyUsed(PasswordAlreadyUsedException ex) {
+        ErrorResponse response = new ErrorResponse(ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidToken(InvalidTokenException ex) {
+        return ResponseEntity.badRequest().body(new ErrorResponse("Invalid reset token."));
+    }
+
+    @ExceptionHandler(TokenExpiredException.class)
+    public ResponseEntity<ErrorResponse> handleExpiredToken(TokenExpiredException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorResponse("Reset token has expired. Please request a new link."));
     }
 
     @ExceptionHandler(InternalAuthenticationServiceException.class)
@@ -102,9 +111,7 @@ public class ExceptionHandlerAdvice {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    /*
-     * Fallback handles any unhandled exceptions
-     */
+
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     ResponseEntity<String> handleOtherException(Exception ex) {
@@ -119,8 +126,8 @@ public class ExceptionHandlerAdvice {
                 .getFieldErrors()
                 .stream()
                 .collect(Collectors.toMap(
-                        fieldError -> fieldError.getField(),       // Key: the field name (e.g., "email", "name")
-                        fieldError -> fieldError.getDefaultMessage() // Value: your custom message (e.g., "Email cannot be blank")
+                        fieldError -> fieldError.getField(),
+                        fieldError -> fieldError.getDefaultMessage()
                 ));
 
         Map<String, Object> body = new HashMap<>();

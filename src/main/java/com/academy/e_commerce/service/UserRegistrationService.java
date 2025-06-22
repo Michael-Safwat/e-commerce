@@ -69,7 +69,6 @@ public class UserRegistrationService {
     }
 
     private void generateAndSendVerificationToken(User user) {
-        // delete old token if exists (optional safety)
         verificationTokenRepository.findByUser(user).ifPresent(verificationTokenRepository::delete);
 
         String token = UUID.randomUUID().toString();
