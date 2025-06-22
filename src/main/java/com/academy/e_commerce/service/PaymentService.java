@@ -1,5 +1,7 @@
 package com.academy.e_commerce.service;
 
+import com.academy.e_commerce.advice.BusinessException;
+import com.academy.e_commerce.advice.PriceChangedException;
 import com.academy.e_commerce.advice.UnauthorizedAccessException;
 import com.academy.e_commerce.model.Order;
 import com.academy.e_commerce.repository.OrderRepository;
@@ -11,6 +13,9 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.Objects;
+
+import static com.academy.e_commerce.utils.CartHelper.calculateOrderPrice;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +39,11 @@ public class PaymentService {
                 .setCurrency("usd")
                 .putMetadata("order_id", String.valueOf(orderId))
                 .build();
+
+        Double newPrice = calculateOrderPrice(order.getOrderProducts());
+        if(!Objects.equals(order.getTotalPrice(), newPrice)){
+            throw new BusinessException("the order total price changed as: "+order.getTotalPrice()+" and the new price is"+newPrice);
+        }
 
         PaymentIntent intent = PaymentIntent.create(params);
 

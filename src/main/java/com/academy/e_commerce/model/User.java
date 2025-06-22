@@ -63,9 +63,6 @@ public class User {
     @JsonIgnore
     private List<Order> orders;
 
-    @OneToMany(mappedBy = "customer")
-    private List<PaymentCard> paymentCards;
-
     @OneToMany(mappedBy = "user")
     private List<ShippingAddress> addresses;
 

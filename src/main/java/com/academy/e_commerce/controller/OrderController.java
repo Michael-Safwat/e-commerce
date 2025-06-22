@@ -47,15 +47,4 @@ public class OrderController {
         return ResponseEntity.ok(this.orderService.finalizeOrder(userId,request));
     }
 
-    //testing
-    @PostMapping("/testconfirm")
-    public void checkoutOrder2(@PathVariable("userId")Long userId){
-        this.orderService.confirmOrder(userId);
-    }
-
-    //testing
-    @PostMapping("/testremove/{orderId}")
-    public void remove(@PathVariable("orderId")Long id){
-        this.orderService.removeOrder(id);
-    }
 }

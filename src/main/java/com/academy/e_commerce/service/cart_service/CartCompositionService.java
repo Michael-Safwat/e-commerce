@@ -33,6 +33,13 @@ public class CartCompositionService {
 
         Cart cart = findOrCreateCart(userId);
 
+        boolean productExists = cart.getItems().stream()
+                .anyMatch(cp -> cp.getProduct().getId().equals(request.getProductId()));
+
+        if (productExists) {
+            throw new BusinessException("Product already exists in the cart");
+        }
+
         Product product = fetchProductWithValidation(request.getProductId(), request.getQuantity());
 
         CartProduct cartProduct = CartProduct.builder()
@@ -48,8 +55,9 @@ public class CartCompositionService {
     }
 
     private Cart findOrCreateCart(Long userId) {
-        return cartRepository.findByUserId(userId).orElse(createCart(userId));
+        return cartRepository.findByUserId(userId).orElseGet(() -> createCart(userId));
     }
+
 
     private Cart createCart(Long userId) {
         User user = userRepository.findById(userId)
