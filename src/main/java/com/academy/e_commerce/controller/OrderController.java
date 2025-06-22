@@ -2,9 +2,7 @@ package com.academy.e_commerce.controller;
 
 import com.academy.e_commerce.dto.CartConfirmation;
 import com.academy.e_commerce.dto.OrderConfirmationRequest;
-import com.academy.e_commerce.dto.OrderResponse;
 import com.academy.e_commerce.dto.OrderDTO;
-import com.academy.e_commerce.model.Cart;
 import com.academy.e_commerce.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -49,15 +47,4 @@ public class OrderController {
         return ResponseEntity.ok(this.orderService.finalizeOrder(userId,request));
     }
 
-    //testing
-//    @PostMapping("/testconfirm")
-//    public void checkoutOrder2(@PathVariable("userId")Long userId){
-//        this.orderService.confirmOrder(userId);
-//    }
-//
-////    testing
-//    @PostMapping("/testremove/{orderId}")
-//    public void remove(@PathVariable("orderId")Long id){
-//        this.orderService.removeOrder(id);
-//    }
 }

@@ -5,6 +5,9 @@ import com.academy.e_commerce.model.CartProduct;
 
 public class CartProductMapper {
 
+    private CartProductMapper() {
+    }
+
     public static CartProductPreview toPreview(CartProduct cartProduct) {
         return new CartProductPreview(
                 cartProduct.getId(),
