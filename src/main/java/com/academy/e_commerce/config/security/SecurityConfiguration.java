@@ -57,7 +57,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, this.baseUrl + "/reactivate/**").permitAll()
                         .requestMatchers(HttpMethod.PATCH, this.baseUrl + "/reset-password/**").permitAll()
                         .requestMatchers(HttpMethod.POST, this.baseUrl + "/users/register/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, this.baseUrl + "/users/verify/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, this.baseUrl + "/users/verify/**").permitAll()
                         .requestMatchers(HttpMethod.POST, this.baseUrl + "/webhook").permitAll()
                         .requestMatchers(HttpMethod.GET, this.baseUrl + "/products/**").permitAll()
                         .requestMatchers(HttpMethod.POST, this.baseUrl + "/users/{userId}/pay/{orderId}").hasAuthority(this.ROLE_CUSTOMER)

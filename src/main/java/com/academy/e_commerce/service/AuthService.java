@@ -1,5 +1,8 @@
 package com.academy.e_commerce.service;
 
+import com.academy.e_commerce.advice.InvalidTokenException;
+import com.academy.e_commerce.advice.PasswordAlreadyUsedException;
+import com.academy.e_commerce.advice.TokenExpiredException;
 import com.academy.e_commerce.config.security.jwt.JwtProvider;
 import com.academy.e_commerce.config.security.jwt.Token;
 import com.academy.e_commerce.model.Password;
@@ -12,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -40,26 +44,33 @@ public class AuthService {
     }
 
     @Transactional
-    public String sendReactivationLink(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+    public void sendReactivationLink(String email) {
+        Optional<User> optionalUser = userRepository.findByEmail(email);
 
-        String token = UUID.randomUUID().toString();
-        user.setResetToken(token);
-        user.setResetExpiryDate(LocalDateTime.now().plusHours(2));
-        userRepository.save(user);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            if (user.getIsVerified()) {
+                String token = UUID.randomUUID().toString();
+                user.setResetToken(token);
+                user.setResetExpiryDate(LocalDateTime.now().plusHours(2));
+                userRepository.save(user);
 
-        emailService.sendReactivationEmail(email, user.getName(), user.getResetToken());
-        return token;
+                emailService.sendReactivationEmail(email, user.getName(), token);
+            }
+        }
     }
 
     @Transactional
     public void resetPassword(String token, Password password) {
         User user = userRepository.findByResetToken(token)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid token"));
+                .orElseThrow(InvalidTokenException::new);
 
         if (user.getResetExpiryDate().isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("Token expired");
+            throw new TokenExpiredException();
+        }
+
+        if (passwordEncoder.matches(password.getNewPassword(), user.getPassword())) {
+            throw new PasswordAlreadyUsedException();
         }
 
         user.setPassword(passwordEncoder.encode(password.getNewPassword()));
